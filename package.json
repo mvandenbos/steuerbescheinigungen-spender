@@ -1,0 +1,88 @@
+{
+  "name": "steuerbescheinigungen-spender",
+  "productName": "Steuerbescheinigungen Spender",
+  "version": "0.0.6",
+  "description": "die Steuerbescheinigungen Spender App fuer Churchtools und Addison/Excel Imports",
+  "main": "src/index",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "make32": "electron-forge make --arch=ia32",
+    "remake": "electron-forge make --skip-package",
+    "remake32": "electron-forge make --skip-package --arch=ia32",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
+  
+  "author": "FCG-Frankfurt",
+  "homepage": "https://fcg-frankfurt.de/",
+  "license": "GPL-3.0",
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "make_options": {
+        "outDir": "C:\\Temp\\out"
+      },
+      "electronPackagerConfig": {
+        "packageManager": "yarn",
+        "icon": "src/assets/icon.ico"
+      },
+      "electronWinstallerConfig": {
+        "name": "steuerbescheinigungen-spender",
+        "iconUrl": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\icon.ico",
+        "setupIcon": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\icon.ico",
+        "loadingGif": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\loading.gif"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "steuerbescheinigungenspender"
+      }
+    }
+  },
+  "dependencies": {
+    "electron-compile": "^6.4.3",
+    "electron-devtools-installer": "^2.1.0",
+    "electron-simple-updater": "^1.4.2",
+    "electron-squirrel-startup": "^1.0.0",
+    "in-words": "^0.2.2",
+    "material-design-icons-iconfont": "^3.0.3",
+    "pdfmake": "^0.1.37",
+    "q": "^1.5.1",
+    "restler": "^3.4.0",
+    "underscore": "^1.9.1",
+    "vue": "^2.5.10",
+    "vue-form-generator": "^2.3.0",
+    "vueify": "^9.4.1",
+    "vuetify": "^1.1.9",
+    "vuetify-form-generator": "^0.0.4",
+    "vuex": "^3.0.1",
+    "vuex-i18n": "^1.10.5",
+    "xlsx": "^0.13.3"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "2.0.6"
+  }
+}
