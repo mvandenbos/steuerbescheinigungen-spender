@@ -1,0 +1,103 @@
+<template>
+  <v-card>  
+    <v-toolbar secondary color="secondary" dark :clipped-left="true">
+        <h2 class="title">{{ $t('title') }}</h2>
+        <v-spacer></v-spacer>
+        <span class="text-xs-right">Version {{ getAppVersion() }}</span>
+    </v-toolbar>
+    <v-card-text>
+      <h2 class="py-2">{{ $t('settings') }}</h2>
+      <v-text-field :label="$t('chuchname')" type="text" v-model="settings.churchname" required></v-text-field>
+      <v-text-field :label="$t('churchtoolsURL')" type="text" v-model="settings.churchtoolshost" required></v-text-field>
+      <h3 class="py-2">
+        Logo
+        <v-btn v-show="settings.churchlogo.src != ''" flat small color="error" @click="removeLogo">{{ $t('logoRemove') }}</v-btn>
+      </h3>
+      <div v-if="settings.churchlogo.src != ''">
+        <img :src="getChurchLogoSrc()" :alt="getChurchLogoAlt()" class="logo mb-2"/>
+        <v-text-field :label="$t('logoDescription')" type="text" v-model="settings.churchlogo.description"></v-text-field>
+      </div>
+      <div v-else>
+        <label>{{ $t('logoNone') }}</label>
+        <uploader-view filetypes="image/png, image/jpeg, image/gif" @file-change="processFileChange" class="my-2">
+        </uploader-view>
+      </div>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="secondary" flat @click="close">Close</v-btn>
+      <v-btn color="accent" @click="save">Save</v-btn>
+    </v-card-actions>
+  </v-card>
+</template>
+
+<script>
+const {app} = require('electron').remote
+import { mapState } from 'vuex'
+import UploaderView from '../utilities/UploaderView';
+const path = require("path");
+const fs = require('fs');
+const filePath = path.join(__dirname, "..", "../settings/settings.json");
+const logoPath = path.join(__dirname, "..", "../assets/logo/");
+const ct = require('../../churchtools/credentials').churchtools;
+
+export default {
+  name: "SettingsView",
+  components: { UploaderView },
+  data() {
+    return {
+      file: null,
+    }
+  },
+  methods: {
+    close() {
+      this.$emit('close');
+    },
+    save: function() {
+      let settingsdata = JSON.stringify(this.settings)
+      ct.host = this.settings.churchtoolshost
+      this.$store.dispatch('UPDATE_SETTINGS', this.settings)
+      this.$emit('close', settingsdata)
+      fs.writeFile(filePath, settingsdata , function(err) {
+          if(err) {
+              return console.log(err);
+          }
+          console.log("The file was saved!");
+      });
+    },
+    getAppVersion: function() {
+      return app.getVersion()
+    },
+    processFileChange(e) {
+      if (e.target.files.length > 0) {
+        this.file = e.target.files[0]        
+        let rawdata = fs.readFileSync(this.file.path)
+        let base64data = rawdata.toString('base64');
+        let base64Path = "data:" + this.file.type + ";base64," + base64data 
+        this.settings.churchlogo.src = base64Path
+      }
+    },
+    removeLogo() {
+      this.settings.churchlogo.src = ""
+      this.settings.churchlogo.description = ""
+    },
+    getChurchLogoSrc: function () {
+      return this.settings.churchlogo.src
+    },
+    getChurchLogoAlt: function () {
+      return this.settings.churchlogo.description
+    },
+  },
+  computed: mapState([
+    'settings'
+  ])
+}
+</script>
+
+<style scoped>
+  .logo {
+    max-width: 300px;
+    max-height: 300px; 
+    display: block;
+  }
+</style>

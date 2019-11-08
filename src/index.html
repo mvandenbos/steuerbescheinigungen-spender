@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Steuerbescheinigungen Spender</title>
+    <link href="../node_modules/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
+    <link href="../node_modules/material-design-icons-iconfont/dist/material-design-icons.css" rel="stylesheet" type="text/css"></link>
+    <link href="assets/flags/flag-icon.css" rel="stylesheet" type="text/css"></link>
+  </head>
+  <body>
+    <div id="app">
+    </div>
+  </body>
+
+  <script>
+    import Vue from 'vue'
+    import App from './App.vue'
+    import Vuetify from 'vuetify'
+    import store from './store'
+    import vuexI18n from 'vuex-i18n/dist/vuex-i18n.umd.js'
+    import en from './translations/en.js'
+    import de from './translations/de.js'
+
+    Vue.use(vuexI18n.plugin, store);
+    Vue.use(Vuetify, {
+      theme: {
+        primary: '#07204e',
+        secondary: '#555',
+        accent: '#BF360C',
+        error: '#B71C1C',
+        info: '#2196F3',
+        success: '#388E3C',
+        warning: '#FFC107'
+      },
+    })
+    
+    // add translations directly to the application
+    Vue.i18n.add('en', en);
+    Vue.i18n.add('de', de);
+    
+    // set the start locale to use
+    Vue.i18n.set('de');
+    Vue.config.productionTip = false
+
+    new Vue({
+      store,
+      render: h => h(App)
+    }).$mount('#app')
+  </script>
+</html>
