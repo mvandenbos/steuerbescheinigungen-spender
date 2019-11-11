@@ -3,7 +3,7 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 const updater = require('electron-simple-updater');
 if(require('electron-squirrel-startup')) app.quit();
-updater.init('https://apps.fcg-frankfurt.de/steuerbescheinigungen-spender/updates.json');
+updater.init('https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/Updates/updates.json');
 
 let mainWindow;
 let reportWindow;
