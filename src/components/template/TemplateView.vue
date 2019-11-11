@@ -4,11 +4,14 @@
       <v-toolbar-title>Edit Template</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn dark flat @click="save">
-          <v-icon>save</v-icon>&nbsp;Save
+        <v-btn dark flat @click="resetLocalTemplate()">
+          <v-icon>refresh</v-icon>&nbsp;{{ $t('resetToDefault') }}
         </v-btn>
         <v-btn dark flat @click="close()">
-          <v-icon>close</v-icon>&nbsp;Cancel
+          <v-icon>close</v-icon>&nbsp;{{ $t('cancel') }}
+        </v-btn>
+        <v-btn dark flat @click="save">
+          <v-icon>save</v-icon>&nbsp;{{ $t('save') }}
         </v-btn>
       </v-toolbar-items>            
     </v-toolbar>
@@ -20,9 +23,9 @@
             <v-card-text>
               <v-text-field
                 label="Year"
-                v-model="reportdata.year"
-                @focus="highlightElement('reportdata-year')"
-                reportdata-year         
+                v-model="template.year"
+                @focus="highlightElement('template-year')"
+                template-year         
               ></v-text-field>
             </v-card-text>
           </v-card>
@@ -31,17 +34,17 @@
             <v-card-text>
               <v-text-field
                 label="LetterHead"
-                v-model="reportdata.name"
-                @focus="highlightElement('reportdata-name')"
-                reportdata-name         
+                v-model="template.name"
+                @focus="highlightElement('template-name')"
+                template-name         
               ></v-text-field>
-              <div v-for="(item, key) in reportdata.letterhead" v-bind:key="key">
+              <div v-for="(item, key) in template.letterhead" v-bind:key="key">
                 <v-text-field
                   :label="key"
                   :value="item"
-                  v-model="reportdata.letterhead[key]"
-                  @focus="highlightElement('reportdata-letterhead-' + key)"
-                  v-bind="attributes(`reportdata-letterhead-${key}`)"
+                  v-model="template.letterhead[key]"
+                  @focus="highlightElement('template-letterhead-' + key)"
+                  v-bind="attributes(`template-letterhead-${key}`)"
                 ></v-text-field>
               </div>
             </v-card-text>
@@ -50,7 +53,7 @@
           <h2 class="my-4">Letter</h2>
           <v-card>
             <v-card-text>
-              <div v-for="(item, key) in reportdata.letter" v-bind:key="key">
+              <div v-for="(item, key) in template.letter" v-bind:key="key">
                 <div v-if="typeof item == 'object'">
                   <div v-for="(subitem, subkey) in item" v-bind:key="subkey">
                     <div v-if="typeof subitem == 'object'">
@@ -58,35 +61,35 @@
                         <v-text-field
                           :label="childkey"
                           :value="childitem"
-                          v-model="reportdata.letter[key][subkey][childkey]"
-                          @focus="highlightElement('reportdata-letter-' + key + '-' + subkey + '-' + childkey)"
-                          v-bind="attributes(`reportdata-letter-${key}-${subkey}-${childkey}`)"
+                          v-model="template.letter[key][subkey][childkey]"
+                          @focus="highlightElement('template-letter-' + key + '-' + subkey + '-' + childkey)"
+                          v-bind="attributes(`template-letter-${key}-${subkey}-${childkey}`)"
                         ></v-text-field>
                       </div>
                     </div>
                     <v-textarea v-else-if="key=='body'"
                       :label="subkey"
                       :value="subitem"
-                      v-model="reportdata.letter[key][subkey]"
-                      @focus="highlightElement('reportdata-letter-' + key + '-' + subkey)"
-                      v-bind="attributes(`reportdata-letter-${key}-${subkey}`)"
+                      v-model="template.letter[key][subkey]"
+                      @focus="highlightElement('template-letter-' + key + '-' + subkey)"
+                      v-bind="attributes(`template-letter-${key}-${subkey}`)"
                     >
                     </v-textarea>
                     <v-text-field v-else
                       :label="subkey"
                       :value="subitem"
-                      v-model="reportdata.letter[key][subkey]"
-                      @focus="highlightElement('reportdata-letter-' + key + '-' + subkey)"
-                      v-bind="attributes(`reportdata-letter-${key}-${subkey}`)"
+                      v-model="template.letter[key][subkey]"
+                      @focus="highlightElement('template-letter-' + key + '-' + subkey)"
+                      v-bind="attributes(`template-letter-${key}-${subkey}`)"
                     ></v-text-field>
                   </div>
                 </div>
                 <v-text-field v-else
                   :label="key"
                   :value="item"
-                  v-model="reportdata.letter[key]"
-                  @focus="highlightElement('reportdata-letter-' + key)"
-                  v-bind="attributes(`reportdata-letter-${key}`)"
+                  v-model="template.letter[key]"
+                  @focus="highlightElement('template-letter-' + key)"
+                  v-bind="attributes(`template-letter-${key}`)"
                 ></v-text-field>
               </div>
             </v-card-text>
@@ -94,19 +97,19 @@
           <h2 class="my-4">Report</h2>
           <v-card>
             <v-card-text>
-              <div v-for="(item, key) in reportdata.report" v-bind:key="key">           
+              <div v-for="(item, key) in template.report" v-bind:key="key">           
                 <v-text-field
                   :label="key"
                   :value="item"
-                  v-model="reportdata.report[key]"
-                  @focus="highlightElement('reportdata-report-' + key)"
-                  v-bind="attributes(`reportdata-report-${key}`)"
+                  v-model="template.report[key]"
+                  @focus="highlightElement('template-report-' + key)"
+                  v-bind="attributes(`template-report-${key}`)"
                 ></v-text-field>
               </div>
               <h3>Options</h3>
               <v-checkbox
-                v-model="reportdata.reportsettings.showSpenderNr"
-                :value="reportdata.reportsettings.showSpenderNr"
+                v-model="template.reportsettings.showSpenderNr"
+                :value="template.reportsettings.showSpenderNr"
                 label="Show Spender-Nr. in Report"
                 type="checkbox"
                 required
@@ -118,18 +121,18 @@
             <v-card-text>
               <v-text-field
                 label="Footer Title"
-                v-model="reportdata.footer.title"
-                @focus="highlightElement('reportdata-footer-title')"
-                v-bind="attributes(`reportdata-report-title`)"
+                v-model="template.footer.title"
+                @focus="highlightElement('template-footer-title')"
+                v-bind="attributes(`template-report-title`)"
               >
               </v-text-field>
-              <div v-for="(item, key) in reportdata.footer.content" v-bind:key="key">           
+              <div v-for="(item, key) in template.footer.content" v-bind:key="key">           
                 <v-textarea
                   :label="key"
                   :value="item"
-                  v-model="reportdata.footer.content[key]"
-                  @focus="highlightElement('reportdata-footer-content-' + key)"
-                  v-bind="attributes(`reportdata-footer-content-${key}`)"
+                  v-model="template.footer.content[key]"
+                  @focus="highlightElement('template-footer-content-' + key)"
+                  v-bind="attributes(`template-footer-content-${key}`)"
                 ></v-textarea>
               </div>
             </v-card-text>
@@ -149,9 +152,9 @@
             <v-card class="report--page pa-4 mb-4">
               <v-card-text class="">
                 <div class="text-xs-center">
-                  <h3 id="reportdata.name" reportdata-name class="mb-2">{{reportdata.name}}</h3>
+                  <h3 id="template.name" template-name class="mb-2">{{template.name}}</h3>
                   <div class="letterhead--subheader">
-                    <p v-for="(p, key) in reportdata.letterhead" v-bind:key="key" v-if="p!=''"  :id="'reportdata.letterhead.'+ key" v-bind="attributes(`reportdata-letterhead-${key}`)">{{p}}</p> 
+                    <p v-for="(p, key) in template.letterhead" v-bind:key="key" v-if="p!=''"  :id="'template.letterhead.'+ key" v-bind="attributes(`template-letterhead-${key}`)">{{p}}</p> 
                   </div>
                 </div>
                 <div class="mt-4">
@@ -159,63 +162,63 @@
                   <br>
                   Herr<br>
                   Max Musterman<br>
-                  Strases 61<br>
+                  Strasse 61<br>
                   11111 Frankfurt
                   <br>
                   <br>
                   <br>
                 </div>
                 <div class="mt-4 text-xs-center letter--header">
-                  <h4 id="reportdata.letter.header.title" reportdata-letter-header-title>{{reportdata.letter.header.title}}</h4>
-                  <p v-for="(subheader, key) in reportdata.letter.header.subheaders" v-bind:key="key" v-if="subheader!=''" v-bind="attributes(`reportdata-letter-header-subheaders-${key}`)"><small>{{subheader}}</small></p>
+                  <h4 id="template.letter.header.title" template-letter-header-title>{{template.letter.header.title}}</h4>
+                  <p v-for="(subheader, key) in template.letter.header.subheaders" v-bind:key="key" v-if="subheader!=''" v-bind="attributes(`template-letter-header-subheaders-${key}`)"><small>{{subheader}}</small></p>
                   <hr class="mt-1">
                 </div>
                 <div class="mt-4">
                   <p>
-                    <span id="reportdata.letter.formOfAddress" reportdata-letter-formOfAddress>{{reportdata.letter.formOfAddress}}</span><br>
+                    <span id="template.letter.formOfAddress" template-letter-formOfAddress>{{template.letter.formOfAddress}}</span><br>
                     Herr Max Musterman, Strases 61, 11111 Frankfurt
                   </p>
                   <p>
-                    <span id="reportdata.letter.totalAmountText" reportdata-letter-totalAmountText>{{reportdata.letter.totalAmountText}}</span><br>
-                    *** 1.400,00 € *** / ***eintausendvierhundert Euro*** / 01.01.<span reportdata-year>{{reportdata.year}}</span> bis 31.12.<span reportdata-year>{{reportdata.year}}</span>
+                    <span id="template.letter.totalAmountText" template-letter-totalAmountText>{{template.letter.totalAmountText}}</span><br>
+                    *** 1.400,00 € *** / ***eintausendvierhundert Euro*** / 01.01.<span template-year>{{template.year}}</span> bis 31.12.<span template-year>{{template.year}}</span>
                   </p>
                 </div>
                 <div class="mt-4">
-                  <p v-for="(p, key) in reportdata.letter.body" v-bind:key="key" v-if="p!=''"  :id="'reportdata.letter.body.'+ key" v-bind="attributes(`reportdata-letter-body-${key}`)">{{p}}</p>
+                  <p v-for="(p, key) in template.letter.body" v-bind:key="key" v-if="p!=''"  :id="'template.letter.body.'+ key" v-bind="attributes(`template-letter-body-${key}`)">{{p}}</p>
                 </div>
                 <div class="mt-4">
                   <v-layout>
                     <v-flex xs-6>
-                      <span id="reportdata.letter.signature.city" reportdata-letter-signature-city>{{reportdata.letter.signature.city}}</span> den <span reportdata-letter-signature-date>{{getFullDate(reportdata.letter.signature.date)}}</span>
+                      <span id="template.letter.signature.city" template-letter-signature-city>{{template.letter.signature.city}}</span> den <span template-letter-signature-date>{{getFullDate(template.letter.signature.date)}}</span>
                     </v-flex>
                     <v-flex xs-6 class="text-xs-center">
                       <hr>
-                      <span id="reportdata.letter.signature.pastor" reportdata-letter-signature-pastor>{{reportdata.letter.signature.pastor}}</span><br v-if="reportdata.letter.signature.pastor != ''">
-                      <span reportdata-name>{{reportdata.name}}</span>
+                      <span id="template.letter.signature.pastor" template-letter-signature-pastor>{{template.letter.signature.pastor}}</span><br v-if="template.letter.signature.pastor != ''">
+                      <span template-name>{{template.name}}</span>
                     </v-flex>
                   </v-layout>
                 </div>
                 <div class="footer">
-                  <p class="footer--title" id="reportdata.footer.title" reportdata-footer-title>{{reportdata.footer.title}}</p>
-                  <p v-for="(item, key) in reportdata.footer.content" v-bind:key="key"  v-if="item!=''"  :id="'reportdata.footer.content.'+ key" v-bind="attributes(`reportdata-footer-content-${key}`)">{{item}}</p>
+                  <p class="footer--title" id="template.footer.title" template-footer-title>{{template.footer.title}}</p>
+                  <p v-for="(item, key) in template.footer.content" v-bind:key="key"  v-if="item!=''"  :id="'template.footer.content.'+ key" v-bind="attributes(`template-footer-content-${key}`)">{{item}}</p>
                 </div>
               </v-card-text>
             </v-card>
             <v-divider></v-divider>
             <v-card class="report--page pa-4">
               <v-card-text class="">
-                <h3 id="reportdata.report.title" reportdata-report-title>{{reportdata.report.title}}</h3>
+                <h3 id="template.report.title" template-report-title>{{template.report.title}}</h3>
                 <v-layout class="my-4">
-                  <v-flex xs2><span  id="reportdata.report.formOfAddress" reportdata-report-formOfAddress>{{reportdata.report.formOfAddress}}</span></v-flex>
+                  <v-flex xs2><span  id="template.report.formOfAddress" template-report-formOfAddress>{{template.report.formOfAddress}}</span></v-flex>
                   <v-flex xs6>
                     Herr<br>
                     Max Musterman<br>
                     Strases 61<br>
                     11111 Frankfurt
                   </v-flex>
-                  <v-flex xs4 class="text-xs-right"><span v-show="reportdata.reportsettings.showSpenderNr">Spender-Nr: 1</span></v-flex>
+                  <v-flex xs4 class="text-xs-right"><span v-show="template.reportsettings.showSpenderNr">Spender-Nr: 1</span></v-flex>
                 </v-layout>
-                <table class="reportDataTable mt-4">
+                <table class="templateTable mt-4">
                   <thead>
                     <tr>
                       <th>Datum</th>
@@ -260,8 +263,8 @@
                   </tbody>
                 </table>
                 <div class="footer">
-                  <p class="footer--title" reportdata-footer-title>{{reportdata.footer.title}}</p>
-                  <p v-for="(item, key) in reportdata.footer.content" v-bind:key="key" v-if="item!=''"  v-bind="attributes(`reportdata-footer-content-${key}`)">{{item}}</p>
+                  <p class="footer--title" template-footer-title>{{template.footer.title}}</p>
+                  <p v-for="(item, key) in template.footer.content" v-bind:key="key" v-if="item!=''"  v-bind="attributes(`template-footer-content-${key}`)">{{item}}</p>
                 </div>
               </v-card-text>
             </v-card>        
@@ -273,33 +276,35 @@
 </template>
  
 <script> 
+import { mapState } from 'vuex'
 const path = require("path");
 const fs = require('fs');
 const filePath = path.join(__dirname, "..", "../template/template.json");
+import keys from '../../config/LocalForageKeys'
+import localFileManager from '../../utilities/localFileManager'
 
 export default {
   name: "TemplateView",
-  data: () => ({
-    reportdata: {}
-  }),
+  data() {
+    return {
+    }
+  },
+  computed: mapState([
+    'template'
+  ]),
   methods: {
     loadData: function() {
       let rawdata = fs.readFileSync(filePath);  
       let data = JSON.parse(rawdata);  
-      this.reportdata = data
+      this.template = data
     },
     close() {
       this.$emit('close')
     },
     save: function() {
-      let data = JSON.stringify(this.reportdata)
+      localFileManager.save(localStore, keys.TEMPLATE, this.template)   
+      this.$store.dispatch('UPDATE_TEMPLATE', this.template)
       this.$emit('close')
-      fs.writeFile(filePath, data , function(err) {
-          if(err) {
-              return console.log(err);
-          }
-          console.log("The file was saved!");
-      });
     },
     highlightElement: function(el) {
       var elements = document.getElementsByClassName('highlight');
@@ -329,10 +334,13 @@ export default {
         let _date = new Date()
         return _date.getDate().toString().padStart(2, "0") + '.' + (_date.getMonth() + 1).toString().padStart(2, "0") + '.' + _date.getFullYear()
       }
+    },
+    resetLocalTemplate: function () {
+      localFileManager.resetItem(localStore, keys.TEMPLATE, this.$store, 'UPDATE_TEMPLATE')
     }
   },
   beforeMount(){
-    this.loadData()
+    //this.loadData()
   },
 }
 </script> 
@@ -368,30 +376,30 @@ export default {
     padding: 0px;
   }
 
-  .reportDataTable {
+  .templateTable {
     border-collapse: collapse;
     font-size: 12px;
     width: 100%;
     margin-top: 50px !important;
   }
-  .reportDataTable th{
+  .templateTable th{
     text-align: left;
     border-bottom: 2px solid #555;
   }
-  .reportDataTable th .subheader {
+  .templateTable th .subheader {
     font-size: 11px;
     color: #aaa;
   }
-  .reportDataTable td{
+  .templateTable td{
     padding: 5px 3px;
     border-bottom: 1px solid #ccc;
   }
-  .reportDataTable .totalRow {
+  .templateTable .totalRow {
     border-top: 2px solid #555;
     border-bottom: 0px !important;
     font-weight: bold;
   }
-  .reportDataTable .totalRow td {
+  .templateTable .totalRow td {
     border-bottom: 0px !important;
   }
   .footer {

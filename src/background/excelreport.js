@@ -1,7 +1,7 @@
 ﻿const q = require('q');
 const dialog = require('electron').remote.dialog
 const xlsx = require("xlsx");
-const errors = require("../errors").default;
+const errors = require("../config/errors").default;
 const fs = require('fs')
 const path = require("path");
 const filePath = path.join(__dirname, "..", "/template/template.json");

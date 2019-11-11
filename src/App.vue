@@ -28,9 +28,12 @@ import IndexView from './components/IndexView'
 import SettingsView from './components/settings/SettingsView'
 import Vue from 'vue'
 import { mapState } from 'vuex';
+import keys from './config/LocalForageKeys'
+import localFileManager from './utilities/localFileManager'
 const path = require("path");
 const fs = require('fs');
 const filePath = path.join(__dirname, "", "settings/settings.json");
+const templateFilePath = path.join(__dirname, "", "template/template.json");
 const ct = require('./churchtools/credentials').churchtools;
 
 export default {
@@ -56,10 +59,16 @@ export default {
       this.activeLang = 'de'
     },
     loadData: function() {
-      let rawdata = fs.readFileSync(filePath);  
-      let _settings = JSON.parse(rawdata);
+      let rawdata
+      let _settings
+      let _template
+
+      _settings = localFileManager.get(localStore, keys.SETTINGS)
+      _template = localFileManager.get(localStore, keys.TEMPLATE)
+      
       ct.host = _settings.churchtoolshost
       this.$store.dispatch('UPDATE_SETTINGS', _settings)
+      this.$store.dispatch('UPDATE_TEMPLATE', _template)
     },
     closeSettings: function() {
       this.showSettingsModal = false
@@ -71,19 +80,23 @@ export default {
     },
     hasChurchLogo: function () {
       let hasLogo = false;
-      if (this.settings.churchlogo.src) {
+      if (this.settings && this.settings.churchlogo && this.settings.churchlogo.src) {
         hasLogo = true
       }
       return hasLogo
     },
     getChurchLogoSrc: function () {
-      return this.settings.churchlogo.src
+      if (this.settings && this.settings.churchlogo) {
+        return this.settings.churchlogo.src
+      }
     },
     getChurchLogoAlt: function () {
-      return this.settings.churchlogo.description
-    }
+      if (this.settings  && this.settings.churchlogo) {
+        return this.settings.churchlogo.description
+      }
+    },
   },
-  beforeMount(){
+  created(){
     this.loadData()
   },
   computed: mapState([

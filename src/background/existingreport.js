@@ -1,6 +1,6 @@
 const q = require('q');
 const xlsx = require("xlsx");
-import errors from '../errors'
+import errors from '../config/errors'
 
 let hasCorrectHeaders = function(data) {
   let reportHeaders = [

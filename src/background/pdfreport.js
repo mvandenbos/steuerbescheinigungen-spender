@@ -2,7 +2,7 @@ const q = require('q');
 const dialog = require('electron').remote.dialog
 const fs = require('fs')
 const PDFDocument = require('./pdfkit-tables')
-const errors = require("../errors").default;
+const errors = require("../config/errors").default;
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const path = require("path");
 
