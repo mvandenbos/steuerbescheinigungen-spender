@@ -48,29 +48,20 @@ export default {
       this.newVersionReadMe = meta.readme; 
     },
     checkForUpdate: function() {
-      console.log('check-for-update-sent')
       ipcRenderer.send("check-for-updates");      
       ipcRenderer.on("update-available", (sender, meta) => {
-        console.log('update-available')
         this.setNewVersionData(sender, meta)
       })
     },
     startUpdate: function() {      
-      console.log('download-update')   
       this.newVersionDownloading = true
       ipcRenderer.send("download-update"); 
       ipcRenderer.on("update-downloaded", (sender, meta) => {
-        console.log('update-downloaded')
         this.newVersionDownloading = false
         this.newVersionDownloaded = true
       })
     },
-    finishDownload: function() {
-        this.newVersionDownloading = false
-        this.newVersionDownloaded = true
-    },
-    restartAndInstallUpdate: function() {      
-      console.log('quit-and-install')
+    restartAndInstallUpdate: function() {   
       ipcRenderer.send("quit-and-install"); 
     }
   },
@@ -83,6 +74,6 @@ export default {
 <style>
 .v-alert--white-icons .v-icon.material-icons.theme--light.v-alert__icon,
 .v-alert--white-icons .v-icon.v-icon--right.material-icons.theme--light {
-  color: #FFF !important;
+  color: #FFFFFF !important;
 }
 </style>
