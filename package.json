@@ -1,7 +1,7 @@
 {
   "name": "steuerbescheinigungen-spender",
   "productName": "Steuerbescheinigungen Spender",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "die Steuerbescheinigungen Spender App fuer Churchtools und Addison/Excel Imports",
   "main": "src/index",
   "scripts": {
@@ -41,9 +41,9 @@
       },
       "electronWinstallerConfig": {
         "name": "steuerbescheinigungen-spender",
-        "iconUrl": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\icon.ico",
-        "setupIcon": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\icon.ico",
-        "loadingGif": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\loading.gif"
+        "iconUrl": "https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/src/assets/icon.ico",
+        "setupIcon": "src/assets/icon.ico",
+        "loadingGif": "src/assets/loading.gif"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
