@@ -3,7 +3,8 @@
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="slide-down">    
         <template-view v-on:close="toggleTemplateDialog"></template-view>
     </v-dialog>
-    <v-flex xs12 class="mt-3">
+    <v-flex xs12>
+      <updater-view class="mb-2"></updater-view>
       <v-progress-linear v-show="loading" color="accent" :indeterminate="true"></v-progress-linear>
       <v-stepper v-model="activeStep">
         <v-stepper-header>
@@ -243,11 +244,12 @@ import AddisonView from './addison/AddisonView';
 import ChurchtoolsView from './churchtools/ChurchtoolsView';
 import DonorView from './donors/DonorView';
 import TemplateView from "./template/TemplateView";
+import UpdaterView from "./updater/UpdaterView";
 import errors from '../config/errors';
 
 export default {
   name: "index",
-  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, TemplateView },
+  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, TemplateView, UpdaterView },
   data: () => ({
     dialog: false,
     notifications: false,
