@@ -1,10 +1,10 @@
 {
-  "year": "2018",
-  "name": "Freie Christengemeinde Frankfurt am Main e.V.",
+  "year": "2020",
+  "name": "Deine Gemeinde Name",
   "letterhead": {
-    "subheader01": "Eckenheimer Landstr.180, 60318 Frankfurt am Main",
-    "subheader02": "Telefon: 069 - 55 01 57,  Telefax: 069 – 596 22 46",
-    "subheader03": "Internet: www.fcg-frankfurt.de,  E-Mail: buero@fcg-frankfurt.de",
+    "subheader01": "Grosse Strasse, 60000 Frankfurt am Main",
+    "subheader02": "Telefon: 069 - 11 11 11,  Telefax: 069 – 22 22 22",
+    "subheader03": "Internet: www.deine-gemeinde-homepage.de,  E-Mail: kontakt@deine-gemeinde-homepage.de",
     "subheader04": ""
   },
   "letter": {

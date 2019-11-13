@@ -1,7 +1,7 @@
 {
   "name": "steuerbescheinigungen-spender",
   "productName": "Steuerbescheinigungen Spender",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "description": "die Steuerbescheinigungen Spender App fuer Churchtools und Addison/Excel Imports",
   "main": "src/index",
   "scripts": {
@@ -15,7 +15,6 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  
   "author": "FCG-Frankfurt",
   "homepage": "https://fcg-frankfurt.de/",
   "license": "GPL-3.0",
@@ -42,9 +41,9 @@
       },
       "electronWinstallerConfig": {
         "name": "steuerbescheinigungen-spender",
-        "iconUrl": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\icon.ico",
-        "setupIcon": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\icon.ico",
-        "loadingGif": "C:\\Users\\<USERNAME>\\Source\\Repos\\steuerbescheinigung-spender\\src\\assets\\loading.gif"
+        "iconUrl": "https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/src/assets/icon.ico",
+        "setupIcon": "src/assets/icon.ico",
+        "loadingGif": "src/assets/loading.gif"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
@@ -63,6 +62,7 @@
     "electron-devtools-installer": "^2.1.0",
     "electron-simple-updater": "^1.4.2",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^5.1.0",
     "in-words": "^0.2.2",
     "material-design-icons-iconfont": "^3.0.3",
     "pdfmake": "^0.1.37",

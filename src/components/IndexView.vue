@@ -3,7 +3,8 @@
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="slide-down">    
         <template-view v-on:close="toggleTemplateDialog"></template-view>
     </v-dialog>
-    <v-flex xs12 class="mt-3">
+    <v-flex xs12>
+      <updater-view class="mb-2"></updater-view>
       <v-progress-linear v-show="loading" color="accent" :indeterminate="true"></v-progress-linear>
       <v-stepper v-model="activeStep">
         <v-stepper-header>
@@ -63,7 +64,7 @@
                 </v-subheader>
               </v-card-title>
               <v-card-text>
-                <uploader-view v-model="reportFile" filetypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></uploader-view>
+                <uploader-view @file-change="processReportFileChange"  filetypes="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></uploader-view>
               </v-card-text>        
               <v-card-actions>
                 <v-btn class="mx-4 mt-4" color="primary" primary @click="uploadPreviousReport">{{ $t('uploadButtonText') }}</v-btn>
@@ -86,7 +87,7 @@
                   {{ $t('stepperTitle3') }}
               </v-card-title>
               <v-card-text>
-                <uploader-view v-model="file" filetypes=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></uploader-view>
+                <uploader-view @file-change="processExcelUploadFileChange" filetypes=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></uploader-view>
               </v-card-text>        
               <v-card-actions>
                 <v-btn class="mx-4 mt-4" color="primary" primary @click="upload">{{ $t('uploadButtonText') }}</v-btn>
@@ -243,11 +244,12 @@ import AddisonView from './addison/AddisonView';
 import ChurchtoolsView from './churchtools/ChurchtoolsView';
 import DonorView from './donors/DonorView';
 import TemplateView from "./template/TemplateView";
-import errors from '../errors';
+import UpdaterView from "./updater/UpdaterView";
+import errors from '../config/errors';
 
 export default {
   name: "index",
-  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, TemplateView },
+  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, TemplateView, UpdaterView },
   data: () => ({
     dialog: false,
     notifications: false,
@@ -451,6 +453,12 @@ export default {
         this.$store.dispatch('UPDATE_NOADDISONIDSINCTLIST_DATA', [])
         this.$store.dispatch('UPDATE_DONATIONREPORT_DATA', [])
         this.setAlert(false);
+    },    
+    processExcelUploadFileChange: function(e) {
+      this.file = e.target.files[0]
+    },
+    processReportFileChange: function(e) {
+      this.reportFile = e.target.files[0]
     }
   },
   beforeMount(){

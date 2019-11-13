@@ -13,7 +13,8 @@ export default new Vuex.Store({
     noAddisonSpenderIdInChurchtools: [],
     noAddisonSpenderIdInChurchtoolsIdList: [],
     donationReportData: [],
-    settings: {}
+    settings: {},
+    template: {},
   },
   mutations: {
     UPDATE_PERSONS: (state, data) => state.persons = data,
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     UPDATE_NOADDISONIDSINCTLIST_DATA: (state, data) => state.noAddisonSpenderIdInChurchtoolsIdList = data,
     UPDATE_DONATIONREPORT_DATA: (state, data) => state.donationReportData = data,
     UPDATE_SETTINGS: (state, data) => state.settings = data,
+    UPDATE_TEMPLATE: (state, data) => state.template = data,
   },
   actions: {
     UPDATE_PERSONS: ({ commit }, data) => commit('UPDATE_PERSONS', data),
@@ -35,5 +37,6 @@ export default new Vuex.Store({
     UPDATE_NOADDISONIDSINCTLIST_DATA: ({ commit }, data) => commit('UPDATE_NOADDISONIDSINCTLIST_DATA', data),
     UPDATE_DONATIONREPORT_DATA: ({ commit }, data) => commit('UPDATE_DONATIONREPORT_DATA', data),
     UPDATE_SETTINGS: ({ commit }, data) => commit('UPDATE_SETTINGS', data),
+    UPDATE_TEMPLATE: ({ commit }, data) => commit('UPDATE_TEMPLATE', data),
   }
 })

@@ -3,7 +3,11 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 const updater = require('electron-simple-updater');
 if(require('electron-squirrel-startup')) app.quit();
-updater.init('https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/Updates/updates.json');
+updater.init({
+  url: 'https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/Updates/updates.json',
+  checkUpdateOnStart: true,
+  autoDownload: false
+});
 
 let mainWindow;
 let reportWindow;
@@ -185,4 +189,45 @@ ipcMain.on('start-parse-existing-report', (event, data) => {
 ipcMain.on('background-error', (event, err) => {
   console.log('background-error')
   mainWindow.webContents.send('display-error', err );
+})
+
+ipcMain.on('check-for-updates', () => {
+  console.log('check-for-updates')
+  mainWindow.webContents.send("check-for-update");
+  updater.checkForUpdates()
+})
+updater.on("checking-for-update", () => {
+  console.log("checking-for-update")
+  mainWindow.webContents.send("checking-for-update");
+})
+updater.on("update-available", (meta) => {
+  console.log("update-available")
+  mainWindow.webContents.send("update-available", meta);
+})
+updater.on("update-not-available", () => {
+  console.log("update-not-available")
+  mainWindow.webContents.send("update-not-available");
+})
+ipcMain.on("download-update", () => {
+  console.log("download-update")
+  mainWindow.webContents.send("download-update");
+  updater.downloadUpdate()
+})
+updater.on("update-downloading", (meta) => {
+  console.log("update-downloading")
+  mainWindow.webContents.send("update-downloading", meta);
+})
+updater.on("update-downloaded", (meta) => {
+  console.log("update-downloaded")
+  mainWindow.webContents.send("update-downloaded", meta);
+})
+ipcMain.on('quit-and-install', () => {
+  console.log('quit-and-install')
+  //mainWindow.webContents.send("quit-and-install");
+  updater.quitAndInstall()
+})
+updater.on("error", (err) => {
+  console.log("error")
+  console.dir(err)
+  mainWindow.webContents.send("error", err) ;
 })
