@@ -191,23 +191,10 @@ ipcMain.on('background-error', (event, err) => {
   mainWindow.webContents.send('display-error', err );
 })
 
-
-
 ipcMain.on('check-for-updates', () => {
   console.log('check-for-updates')
   mainWindow.webContents.send("check-for-update");
   updater.checkForUpdates()
-  //mainWindow.webContents.send('check-for-updates', file_path );
-})
-ipcMain.on("download-update", () => {
-  console.log("download-update")
-  mainWindow.webContents.send("download-update");
-  updater.downloadUpdate()
-})
-ipcMain.on('quit-and-install', () => {
-  console.log('quit-and-install')
-  //mainWindow.webContents.send("quit-and-install");
-  updater.quitAndInstall()
 })
 updater.on("checking-for-update", () => {
   console.log("checking-for-update")
@@ -221,6 +208,11 @@ updater.on("update-not-available", () => {
   console.log("update-not-available")
   mainWindow.webContents.send("update-not-available");
 })
+ipcMain.on("download-update", () => {
+  console.log("download-update")
+  mainWindow.webContents.send("download-update");
+  updater.downloadUpdate()
+})
 updater.on("update-downloading", (meta) => {
   console.log("update-downloading")
   mainWindow.webContents.send("update-downloading", meta);
@@ -228,6 +220,11 @@ updater.on("update-downloading", (meta) => {
 updater.on("update-downloaded", (meta) => {
   console.log("update-downloaded")
   mainWindow.webContents.send("update-downloaded", meta);
+})
+ipcMain.on('quit-and-install', () => {
+  console.log('quit-and-install')
+  //mainWindow.webContents.send("quit-and-install");
+  updater.quitAndInstall()
 })
 updater.on("error", (err) => {
   console.log("error")
