@@ -3,7 +3,9 @@ This application generates tax donation documents for individuals.  This uses a 
 
 ## To Use
 
-To clone and run this repository you'll need [Git](https://git-scm.com),  [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) and [Electron](https://electronjs.org/) installed on your computer. From your command line:
+To clone and run this repository you'll need [Git](https://git-scm.com),  [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) and [Electron](https://electronjs.org/) installed on your computer. You can alternately use [Yarn](https://yarnpkg.com/) as your package manager instead of npm.  
+
+From your command line:
 
 ```bash
 # Clone this repository
@@ -11,9 +13,9 @@ git clone https://github.com/mvandenbos/steuerbescheinigungen-spender.git
 # Go into the repository
 cd steuerbescheinigungen-spender
 # Install dependencies
-yarn install
+yarn install # npm install
 # Run the app
-yarn start
+yarn start #nmp start
 ```
 
 ## Packaging the Application
@@ -22,9 +24,11 @@ To package the application as a stand-alone app use the following commands:
 
 ```bash
 # Ensure you are in the root directory of the repository
+
 # run the package script
-yarn package
-# Verify that the applicaiton was packaged in the out directory
+yarn package #npm run package
+
+# Verify that the application was packaged in the out directory
 cd out
 ```
 
@@ -34,11 +38,12 @@ To create an executable installer for your packaged app use the following comman
 
 ```bash
 # Ensure you are in the root directory of the repository
+
 # run the make script
-yarn make
+yarn make #npm run make
 
 # Or to force making a 32 bit application
-yarn make32
+yarn make32 #npm run make32
 
 # Verify that the executable was created in the out/make directory
 cd out/make
