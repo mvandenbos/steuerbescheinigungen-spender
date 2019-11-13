@@ -6,6 +6,7 @@
     value="true"
     dark
     class="v-alert--white-icons"
+    v-show="newVersionAvailable"
   >
     <div v-show="newVersionAvailable  && !newVersionDownloading && !newVersionDownloaded">
       Update Available: Version {{ newVersionNumber }} is now available
