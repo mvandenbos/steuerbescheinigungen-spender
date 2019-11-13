@@ -1,5 +1,5 @@
 # Steuerbescheinigungen Spender
-This application generates tax donation documents for individuals.  This uses a Chuchtools API to get person data and the compares it to an imported Addison Donation export (csv/xlsx) or custom excel file (Bank export, etc.)
+This application generates tax donation documents for individuals.  This uses a [Churchtools](https://www.church.tools/en/home) API to get person data and an imported Addison Donation export (csv/xlsx) or custom excel file (Bank export, etc.) to generate the final donation documents.
 
 ## To Use
 
@@ -23,7 +23,7 @@ To package the application as a stand-alone app use the following commands:
 ```bash
 # Ensure you are in the root directory of the repository
 # run the package script
-npm run package
+yarn package
 # Verify that the applicaiton was packaged in the out directory
 cd out
 ```
@@ -35,7 +35,11 @@ To create an executable installer for your packaged app use the following comman
 ```bash
 # Ensure you are in the root directory of the repository
 # run the make script
-npm run make
+yarn make
+
+# Or to force making a 32 bit application
+yarn make32
+
 # Verify that the executable was created in the out/make directory
 cd out/make
 ```
