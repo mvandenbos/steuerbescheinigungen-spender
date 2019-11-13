@@ -4,7 +4,7 @@ import { enableLiveReload } from 'electron-compile';
 const updater = require('electron-simple-updater');
 if(require('electron-squirrel-startup')) app.quit();
 updater.init({
-  url: 'https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/Updates/updates.json',
+  url: 'https://raw.githubusercontent.com/mvandenbos/steuerbescheinigungen-spender/master/updates/updates.json',
   checkUpdateOnStart: true,
   autoDownload: false
 });
