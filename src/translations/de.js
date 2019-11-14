@@ -25,6 +25,8 @@ export default
   'reviewTitle' : 'Dateien prüfen',
   'donorTab' : 'Spender',
   'donorTabTitle': 'Einzel Bescheinigungen',
+  'duplicatesTab': 'Doppelte Spender IDs',
+  'duplicatesTabTitle': 'Doppelte Spender IDs in Churchtools',  
   'addistonNotInChurchtoolsTab' : 'Spender nicht in Churchtools',
   'addistonNotInChurchtoolsTabTitle' : 'Spender IDs nicht in Churchtools',  
   'churchtoolNotInAddisonTab' : 'Churchtools Personen nicht in Excel Datei',

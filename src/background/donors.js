@@ -62,6 +62,25 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     return missingCtOptigenNrs;
   };
 
+  const getDuplicateCtSpenderIDs = () => {
+    const map = new Map();
+    const duplicateSpenderIDs = []
+    for (const item of _ctPersons) {
+        if(map.has(item.optigem_nr) && item.optigem_nr != ""){        
+          let _duplicates = ctPersonFinder(person => person.optigem_nr == item.optigem_nr);
+          let _item = {
+            "duplicateID": item.optigem_nr,
+            "duplicates": _duplicates
+          }
+          duplicateSpenderIDs.push( _item)
+        }
+        else  {
+          map.set(item.optigem_nr, true);
+        }
+    }
+    return duplicateSpenderIDs
+  }
+
   const getDonationReportData = () => {
 
     let donors = matchingAddisonSpenderIdInChurchtools();
@@ -134,13 +153,15 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let noAddisonSpender = noAddisonSpenderIdInChurchtools()
     let noAddisonSpenderIdList= noAddisonSpenderIdInChurchtoolsIdList()
     let donationReportDataList = getDonationReportData()
+    let duplicateCTSpenderIDs = getDuplicateCtSpenderIDs()
 
     let data = {
       matchingAddisonSpenderIdInChurchtools: matchingAddisonSpender,
       noMatchingAddisonSpenderIdInChurchtools: noMatchingAddisonSpender,
       noAddisonSpenderIdInChurchtools: noAddisonSpender,
       noAddisonSpenderIdInChurchtoolsIdList: noAddisonSpenderIdList,
-      donationReportData: donationReportDataList
+      donationReportData: donationReportDataList,
+      duplicateCTSpenderIDs: duplicateCTSpenderIDs
     };
 
     return data;

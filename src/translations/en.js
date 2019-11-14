@@ -25,6 +25,8 @@ export default
     'reviewTitle' : 'Donation Data Review',
     'donorTab' : 'Donors',
     'donorTabTitle': 'Individual Donor Reports',
+    'duplicatesTab': 'Duplicate Spender IDs',
+    'duplicatesTabTitle': 'Duplicate Spender IDs in Churchtools', 
     'addistonNotInChurchtoolsTab' : 'Donors not in Churchtools',
     'addistonNotInChurchtoolsTabTitle' : 'Donor IDs not in Churchtools',
     'churchtoolNotInAddisonTab' : 'Churchtools Persons not in Excel data',

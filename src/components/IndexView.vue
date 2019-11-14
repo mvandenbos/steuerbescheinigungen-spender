@@ -156,6 +156,10 @@
                     {{ $t('donorTab') }}
                     <v-icon color="green">check_circle</v-icon>
                   </v-tab>
+                  <v-tab href="#tab-6" v-show="duplicateCTSpenderIDs.length > 0">
+                    {{ $t('duplicatesTab') }}
+                    <v-icon color="red">error</v-icon>
+                  </v-tab>
                   <v-tab href="#tab-2" v-show="noAddisonSpenderIdInChurchtoolsIdList.length > 0">
                     {{ $t('addistonNotInChurchtoolsTab') }}
                     <v-icon color="red">error</v-icon>
@@ -223,6 +227,11 @@
                       <v-card-text><addison-view :title="$t('addisonTab')" :addison-data="[...addisonData]"></addison-view></v-card-text>
                     </v-card>
                   </v-tab-item>
+                  <v-tab-item id="tab-6">
+                    <v-card flat>
+                      <v-card-text><duplicates-view :title="$t('duplicatesTabTitle')" :duplicates="[...duplicateCTSpenderIDs]"></duplicates-view></v-card-text>
+                    </v-card>
+                  </v-tab-item>
                 </v-tabs-items>
                 </v-tabs>
               </v-card-text>
@@ -243,13 +252,14 @@ import UploaderView from './utilities/UploaderView';
 import AddisonView from './addison/AddisonView';
 import ChurchtoolsView from './churchtools/ChurchtoolsView';
 import DonorView from './donors/DonorView';
+import DuplicatesView from './duplicates/DuplicatesView';
 import TemplateView from "./template/TemplateView";
 import UpdaterView from "./updater/UpdaterView";
 import errors from '../config/errors';
 
 export default {
   name: "index",
-  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, TemplateView, UpdaterView },
+  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, DuplicatesView, TemplateView, UpdaterView },
   data: () => ({
     dialog: false,
     notifications: false,
@@ -391,6 +401,7 @@ export default {
         self.$store.dispatch('UPDATE_NOMATCHINGADDISONIDS_DATA', data.noMatchingAddisonSpenderIdInChurchtools)
         self.$store.dispatch('UPDATE_NOADDISONIDSINCT_DATA', data.noAddisonSpenderIdInChurchtools)
         self.$store.dispatch('UPDATE_NOADDISONIDSINCTLIST_DATA', data.noAddisonSpenderIdInChurchtoolsIdList)
+        self.$store.dispatch('UPDATE_DUPLICATECTSPENDERID_DATA', data.duplicateCTSpenderIDs)
         self.$store.dispatch('UPDATE_DONATIONREPORT_DATA', data.donationReportData)
 
         self.loading = false;         
@@ -412,6 +423,7 @@ export default {
         self.$store.dispatch('UPDATE_NOMATCHINGADDISONIDS_DATA', data.noMatchingAddisonSpenderIdInChurchtools)
         self.$store.dispatch('UPDATE_NOADDISONIDSINCT_DATA', data.noAddisonSpenderIdInChurchtools)
         self.$store.dispatch('UPDATE_NOADDISONIDSINCTLIST_DATA', data.noAddisonSpenderIdInChurchtoolsIdList)
+        self.$store.dispatch('UPDATE_DUPLICATECTSPENDERID_DATA', data.duplicateCTSpenderIDs)
         self.$store.dispatch('UPDATE_DONATIONREPORT_DATA', data.donationReportData)
         self.loading = false;
         self.refreshPersons = false;
@@ -451,6 +463,7 @@ export default {
         this.$store.dispatch('UPDATE_NOMATCHINGADDISONIDS_DATA', [])
         this.$store.dispatch('UPDATE_NOADDISONIDSINCT_DATA', [])
         this.$store.dispatch('UPDATE_NOADDISONIDSINCTLIST_DATA', [])
+        this.$store.dispatch('UPDATE_DUPLICATECTSPENDERID_DATA', [])
         this.$store.dispatch('UPDATE_DONATIONREPORT_DATA', [])
         this.setAlert(false);
     },    
@@ -471,6 +484,7 @@ export default {
     'noMatchingAddisonSpenderIdInChurchtools',
     'noAddisonSpenderIdInChurchtools',
     'noAddisonSpenderIdInChurchtoolsIdList',
+    'duplicateCTSpenderIDs',
     'donationReportData'
   ])
 };
