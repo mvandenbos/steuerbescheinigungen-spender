@@ -86,16 +86,13 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let donors = matchingAddisonSpenderIdInChurchtools();
 
     let reportData = donors.map((donor) => {
-      var donations = _addisonData.filter(donation => 
-        donation[addisonSpenderID] == donor.optigem_nr
-      )
+      var donations = addisonFinder(donation => donation[addisonSpenderID] == donor.optigem_nr)
 
       let totalDonations = Math.abs(donations.reduce((total, donation) => {
         return total + parseFloat(donation.Betrag)
         }, 0.00
       ));
       
-
       var splitTotal = totalDonations.toFixed(2).toString().split('.')  
       var totalEuro = inWordsDe(parseInt(splitTotal[0]))        
       var totalCent = inWordsDe(parseInt(splitTotal[1]))
@@ -147,6 +144,25 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     return reportData;
   };
 
+  const getDuplicateDonorSpenderIDs = () => {
+    const map = new Map();
+    const duplicateSpenderIDs = []
+    for (const item of getDonationReportData()) {
+      if(map.has(item.optigem_nr) && item.optigem_nr != ""){        
+        let _duplicates = ctPersonFinder(person => person.optigem_nr == item.optigem_nr);
+        let _item = {
+          "duplicateID": item.optigem_nr,
+          "duplicates": _duplicates
+        }
+        duplicateSpenderIDs.push( _item)
+      }
+      else  {
+        map.set(item.optigem_nr, true);
+      }
+    }
+    return duplicateSpenderIDs
+  }
+
   let mergeChurchtoolsAndAddison  = () => {
     let matchingAddisonSpender = matchingAddisonSpenderIdInChurchtools()
     let noMatchingAddisonSpender = noMatchingAddisonSpenderIdInChurchtools()
@@ -154,6 +170,7 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let noAddisonSpenderIdList= noAddisonSpenderIdInChurchtoolsIdList()
     let donationReportDataList = getDonationReportData()
     let duplicateCTSpenderIDs = getDuplicateCtSpenderIDs()
+    let duplicateDonorSpenderIDs = getDuplicateDonorSpenderIDs()
 
     let data = {
       matchingAddisonSpenderIdInChurchtools: matchingAddisonSpender,
@@ -161,7 +178,8 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
       noAddisonSpenderIdInChurchtools: noAddisonSpender,
       noAddisonSpenderIdInChurchtoolsIdList: noAddisonSpenderIdList,
       donationReportData: donationReportDataList,
-      duplicateCTSpenderIDs: duplicateCTSpenderIDs
+      duplicateCTSpenderIDs: duplicateCTSpenderIDs,
+      duplicateDonorSpenderIDs: duplicateDonorSpenderIDs
     };
 
     return data;

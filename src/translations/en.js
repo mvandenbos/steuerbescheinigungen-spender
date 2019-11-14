@@ -27,6 +27,8 @@ export default
     'donorTabTitle': 'Individual Donor Reports',
     'duplicatesTab': 'Duplicate Spender IDs',
     'duplicatesTabTitle': 'Duplicate Spender IDs in Churchtools', 
+    'duplicatesDonorTab': 'Doppelte Donors',
+    'duplicatesDonorTabTitle': 'Doppelte Donor IDs',  
     'addistonNotInChurchtoolsTab' : 'Donors not in Churchtools',
     'addistonNotInChurchtoolsTabTitle' : 'Donor IDs not in Churchtools',
     'churchtoolNotInAddisonTab' : 'Churchtools Persons not in Excel data',
