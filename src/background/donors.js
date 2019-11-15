@@ -1,5 +1,6 @@
 const q = require('q')
 const inWordsDe = require("in-words").de
+const stringSimilarity = require('string-similarity');
 import currencyFormater from '../utilities/currencyFormater'
 
 let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
@@ -79,6 +80,69 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
         }
     }
     return duplicateSpenderIDs
+  }
+
+  const getMisMatchedSpenderIDsInAddison = () => {
+    const misMatchedSpender = []
+    for (const id of donorSpenderIds) {
+      let _donations = addisonFinder(person => person[addisonSpenderID] == id);
+
+      const uniqueDonors = _donations.map(donation => {
+          return {
+            count: 1,
+            name: donation.Buchungstext
+          };
+        }).reduce((a, b) => {
+          a[b.name] = (a[b.name] || 0) + b.count;
+          return a;
+        }, {});
+    
+      const hasMostRecords = Object.keys(uniqueDonors).reduce(function(a, b){ return uniqueDonors[a] > uniqueDonors[b] ? a : b });
+      let _donor = _donations.find(donor => donor.Buchungstext == hasMostRecords)
+
+      let _suspiciousDonations = []
+      let _probability = "low"
+
+      for (const donor of _donations) {
+        let _similarity  =  stringSimilarity.compareTwoStrings(_donor.Buchungstext, donor.Buchungstext)
+        if (_similarity < 1) {
+          let _priority = "low"
+
+          if (_similarity < .5) {
+            _priority = "high"
+            _probability = "high"
+          }
+          if (_similarity >= .5 && _similarity < .7 ) {
+            _priority = "medium"
+            if( _probability != "high") _probability = "medium"
+          }
+          if (_similarity >= .7 && _similarity < 1) {
+            _priority = "low"
+            if( _probability != "high" && _probability != "medium") _probability = "low"
+          }
+
+          let _item = {
+            "misMatchedID": id,
+            "spenderRecord":_donor,
+            "misMatchedRecord": donor,
+            "similarity": _similarity,
+            "probability": _priority
+          }
+
+          _suspiciousDonations.push(_item)
+        }
+      }
+      if (_suspiciousDonations.length > 0) {
+        let _misMatchedRecord = {
+          "donorID": id,
+          "donor": hasMostRecords,          
+          "donations": _suspiciousDonations,
+          "probability": _probability
+        }
+        misMatchedSpender.push(_misMatchedRecord)
+      }
+    }
+    return misMatchedSpender
   }
 
   const getDonationReportData = () => {
@@ -171,6 +235,7 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let donationReportDataList = getDonationReportData()
     let duplicateCTSpenderIDs = getDuplicateCtSpenderIDs()
     let duplicateDonorSpenderIDs = getDuplicateDonorSpenderIDs()
+    let misMatchedSpenderIDsInAddison = getMisMatchedSpenderIDsInAddison()
 
     let data = {
       matchingAddisonSpenderIdInChurchtools: matchingAddisonSpender,
@@ -179,7 +244,8 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
       noAddisonSpenderIdInChurchtoolsIdList: noAddisonSpenderIdList,
       donationReportData: donationReportDataList,
       duplicateCTSpenderIDs: duplicateCTSpenderIDs,
-      duplicateDonorSpenderIDs: duplicateDonorSpenderIDs
+      duplicateDonorSpenderIDs: duplicateDonorSpenderIDs,
+      misMatchedSpenderIDsInAddison: misMatchedSpenderIDsInAddison
     };
 
     return data;
