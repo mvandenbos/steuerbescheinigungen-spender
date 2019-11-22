@@ -93,7 +93,7 @@ let getDonorsFromAddisonExport = function(filepath) {
           deferred.reject({message: errors.E003})
         }
       } catch (e){
-        deferred.reject({message: String(e)})
+        deferred.reject({message: e.message.toString()})
       }
     }
     else {
