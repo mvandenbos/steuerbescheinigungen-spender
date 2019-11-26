@@ -208,6 +208,7 @@
             <v-card class="report--page pa-4">
               <v-card-text class="">
                 <h3 id="template.report.title" template-report-title>{{template.report.title}}</h3>
+                <h3 id="template.report.subtitle" template-report-subtitle>{{template.report.subtitle}}</h3>
                 <v-layout class="my-4">
                   <v-flex xs2><span  id="template.report.formOfAddress" template-report-formOfAddress>{{template.report.formOfAddress}}</span></v-flex>
                   <v-flex xs6>
