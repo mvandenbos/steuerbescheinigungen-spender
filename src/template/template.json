@@ -31,7 +31,7 @@
     },
     "signature": { "city": "Frankfurt am Main", "date": "", "pastor": "Pastor Mustermann" }
   },
-  "report": { "title": "Anlage zur Sammelbestätigung", "formOfAddress": "Anlage für:" },
+  "report": { "title": "Anlage zur Sammelbestätigung", "subtitle":"", "formOfAddress": "Anlage für:" },
   "reportsettings": { "showSpenderNr": true },
   "footer": {
     "title": "Hinweis",
