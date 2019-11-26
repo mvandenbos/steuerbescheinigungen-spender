@@ -45,11 +45,11 @@ const readFromUserDataAndLocalStorage = function (localStore, key) {
   try {
     let _data
     let _rawdata
-    //Get from LocalStorage
-    _data = localStore.getItem(key)
+    //Get from UserData
+    _data = store.get(key)
     if (isDataDoesNotExists(_data)) {
-      //get from UserData if LocalStorage is empty
-      _data = store.get(key)
+      //get from LocalStorage if UserData is empty
+      _data = localStore.getItem(key)
     }
     if (isDataDoesNotExists(_data)) {
       //Get from default template
