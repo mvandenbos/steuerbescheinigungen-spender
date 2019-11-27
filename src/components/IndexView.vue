@@ -156,21 +156,9 @@
                     {{ $t('donorTab') }}
                     <v-icon color="green">check_circle</v-icon>
                   </v-tab>
-                  <v-tab href="#tab-7" v-show="duplicateDonorSpenderIDs.length > 0">
-                    {{ $t('duplicatesDonorTab') }}
-                    <v-icon color="red">error</v-icon>
-                  </v-tab>
-                  <v-tab href="#tab-6" v-show="duplicateCTSpenderIDs.length > 0">
-                    {{ $t('duplicatesTab') }}
-                    <v-icon color="red">error</v-icon>
-                  </v-tab>
-                  <v-tab href="#tab-8" v-show="misMatchedSpenderIDsInAddison.length > 0">
-                    MisMatches
-                    <v-icon color="red">error</v-icon>
-                  </v-tab>
-                  <v-tab href="#tab-2" v-show="noAddisonSpenderIdInChurchtoolsIdList.length > 0">
-                    {{ $t('addistonNotInChurchtoolsTab') }}
-                    <v-icon color="red">error</v-icon>
+                  <v-tab href="#tab-2" >
+                    {{ $t('reviewRecordsTab') }} 
+                    <v-icon color="red">error</v-icon>                  
                   </v-tab>
                   <v-tab href="#tab-3" v-show="noMatchingAddisonSpenderIdInChurchtools.length > 0">
                     {{ $t('churchtoolNotInAddisonTab') }}
@@ -184,70 +172,78 @@
                     {{ $t('addisonTab') }}
                     <v-icon>account_balance</v-icon>
                   </v-tab>
-                <v-tabs-items >
-                  <v-tab-item id="tab-1">
+                <v-tabs-items>
+                  <v-tab-item value="tab-1">
                     <v-card flat>
                       <v-card-text>                    
                         <donor-view :title="$t('donorTabTitle')" :donors="[...donationReportData]"></donor-view>
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
-                  <v-tab-item id="tab-2">
-                    <v-card flat>
-                      <v-card-text>
-                        <v-tabs slider-color="accent"> 
-                          <v-tab href="#tab-2-1" active-class="tabs__item--active initial-slider--line">
-                            {{ $t('missingDonorIdTab')}}
-                          </v-tab>
-                          <v-tab href="#tab-2-2">
-                            {{ $t('missingDonorsTab')}}
-                          </v-tab>
-                          <v-tab-item id="tab-2-1">
-                            <v-card>
-                              <v-card-title class="headline mt-2">
-                                {{ $t('addistonNotInChurchtoolsTabTitle') }}
-                              </v-card-title>
+                  <v-tab-item value="tab-2">
+                    <v-card flat>                      
+                      <v-tabs                      
+                        color="transparent"
+                        icons-and-text                  
+                        slider-color="accent"
+                        grow
+                        class="tab--border-bottom"
+                      >                          
+                        <v-tab href="#tab-verification-01" v-show="noAddisonSpenderIdInChurchtoolsIdList.length > 0" active-class="tabs__item--active initial-slider--line">
+                          {{ $t('addistonNotInChurchtoolsTab') }}
+                          <v-icon color="red">error</v-icon>
+                        </v-tab>               
+                        <v-tab href="#tab-verification-02" v-show="misMatchedSpenderIDsInAddison.length > 0" active-class="tabs__item--active initial-slider--line">
+                          {{ $t('misMatchedTab') }}
+                          <v-icon color="red">error</v-icon>
+                        </v-tab>
+                        <v-tab href="#tab-verification-03" v-show="duplicateDonorSpenderIDs.length > 0" active-class="tabs__item--active initial-slider--line">
+                          {{ $t('duplicatesDonorTab') }}
+                          <v-icon color="red">error</v-icon>
+                        </v-tab>
+                        <v-tab href="#tab-verification-04" v-show="duplicateCTSpenderIDs.length > 0" active-class="tabs__item--active initial-slider--line">
+                          {{ $t('duplicatesTab') }}
+                          <v-icon color="red">error</v-icon>
+                        </v-tab>
+                        <v-tabs-items>
+                          <v-tab-item value="tab-verification-01">
+                            <v-card flat>
                               <v-card-text>
-                                <p v-bind:key="id" v-for="id in noAddisonSpenderIdInChurchtoolsIdList">{{id}}</p>
+                                <no-addison-in-ct-view :title="$t('addistonNotInChurchtoolsTab')" :spenderlist="[...noAddisonSpenderIdInChurchtools]"></no-addison-in-ct-view>
                               </v-card-text>
                             </v-card>
                           </v-tab-item>
-                          <v-tab-item id="tab-2-2">
-                            <addison-view :title="$t('addistonNotInChurchtoolsTab')" :addison-data="[...noAddisonSpenderIdInChurchtools]"></addison-view>
-                          </v-tab-item>                      
-                          <v-tabs-slider color="accent"></v-tabs-slider>  
-                        </v-tabs>
-                      </v-card-text>
+                          <v-tab-item value="tab-verification-02">
+                            <v-card flat>
+                              <v-card-text><mis-matched-view :title="$t('misMatchedTab')" :mismatches="[...misMatchedSpenderIDsInAddison]"></mis-matched-view></v-card-text>
+                            </v-card>
+                          </v-tab-item>
+                          <v-tab-item value="tab-verification-03">
+                            <v-card flat>
+                              <v-card-text><duplicates-view :title="$t('duplicatesDonorTabTitle')" :duplicates="[...duplicateDonorSpenderIDs]"></duplicates-view></v-card-text>
+                            </v-card>
+                          </v-tab-item>
+                          <v-tab-item value="tab-verification-04">
+                            <v-card flat>
+                              <v-card-text><duplicates-view :title="$t('duplicatesTabTitle')" :duplicates="[...duplicateCTSpenderIDs]"></duplicates-view></v-card-text>
+                            </v-card>
+                          </v-tab-item>
+                        </v-tabs-items>
+                    </v-tabs>
                     </v-card>
                   </v-tab-item>
-                  <v-tab-item id="tab-3">
+                  <v-tab-item value="tab-3">
                     <v-card flat>
-                      <v-card-text><churchtools-view :title="$t('churchtoolNotInAddisonTabTitle')" :persons="[...noMatchingAddisonSpenderIdInChurchtools]"></churchtools-view></v-card-text>
-                    </v-card>
+                      <v-card-text><churchtools-view :title="$t('churchtoolNotInAddisonTabTitle')" :persons="[...noMatchingAddisonSpenderIdInChurchtools]"></churchtools-view></v-card-text>                    </v-card>
                   </v-tab-item>
-                  <v-tab-item id="tab-4">
+                  <v-tab-item value="tab-4">
                     <v-card flat>
                       <v-card-text><churchtools-view :title="$t('churchtoolTab')" :persons="[...persons]"></churchtools-view></v-card-text>
                     </v-card>
                   </v-tab-item>
-                  <v-tab-item id="tab-5">
+                  <v-tab-item value="tab-5">
                     <v-card flat>
                       <v-card-text><addison-view :title="$t('addisonTab')" :addison-data="[...addisonData]"></addison-view></v-card-text>
-                    </v-card>
-                  </v-tab-item>
-                  <v-tab-item id="tab-6">
-                    <v-card flat>
-                      <v-card-text><duplicates-view :title="$t('duplicatesTabTitle')" :duplicates="[...duplicateCTSpenderIDs]"></duplicates-view></v-card-text>
-                    </v-card>
-                  </v-tab-item>
-                  <v-tab-item id="tab-7">
-                    <v-card flat>
-                      <v-card-text><duplicates-view :title="$t('duplicatesDonorTabTitle')" :duplicates="[...duplicateDonorSpenderIDs]"></duplicates-view></v-card-text>
-                    </v-card>
-                  </v-tab-item>
-                  <v-tab-item id="tab-8">
-                    <v-card flat>
-                      <v-card-text><mis-matched-view title="MisMatches" :mismatches="[...misMatchedSpenderIDsInAddison]"></mis-matched-view></v-card-text>
                     </v-card>
                   </v-tab-item>
                 </v-tabs-items>
@@ -272,13 +268,14 @@ import ChurchtoolsView from './churchtools/ChurchtoolsView';
 import DonorView from './donors/DonorView';
 import DuplicatesView from './duplicates/DuplicatesView';
 import MisMatchedView from './mismatched/MisMatchedView';
+import NoAddisonInCtView from './no-addiston-in-ct/NoAddisonInCtView';
 import TemplateView from "./template/TemplateView";
 import UpdaterView from "./updater/UpdaterView";
 import errors from '../config/errors';
 
 export default {
   name: "index",
-  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, DuplicatesView, TemplateView, UpdaterView, MisMatchedView },
+  components: { UploaderView, AddisonView, ChurchtoolsView, DonorView, DuplicatesView, TemplateView, UpdaterView, MisMatchedView, NoAddisonInCtView },
   data: () => ({
     dialog: false,
     notifications: false,

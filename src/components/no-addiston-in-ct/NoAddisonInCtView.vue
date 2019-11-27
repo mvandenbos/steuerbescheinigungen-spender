@@ -1,5 +1,5 @@
 <template>
-  <v-card v-show="mismatches.length > 0" class="my-4">
+  <v-card v-show="spenderlist.length > 0" class="my-4">
     <v-card-title class="headline">
       {{title}}
       <v-spacer></v-spacer>
@@ -17,7 +17,7 @@
     <v-card-text>
       <v-data-table
         :headers="headers"
-        :items="mismatches"
+        :items="spenderlist"
         :search="search"
         :pagination.sync="pagination"
         hide-actions
@@ -35,25 +35,15 @@
         </template>
         
         <template slot="items" slot-scope="props">
-          <tr @click="toggle(props.item.donorID)" class="clickable">
+          <tr @click="toggle(props.item.spenderid)" class="clickable">
             <td style="width: 50px;">
-              <v-icon v-if="opened.includes(props.item.donorID)" color="primary">arrow_drop_up</v-icon>
+              <v-icon v-if="opened.includes(props.item.spenderid)" color="primary">arrow_drop_up</v-icon>
               <v-icon v-else color="primary">arrow_drop_down</v-icon>
             </td>
-            <td style="width: 100px;">{{ props.item.donorID }}</td>
-            <td flex>{{ props.item.donor }}</td>
-            <td>
-              <v-chip
-                :color="getChipColor(props.item.probability)"
-                text-color="white"
-                small
-              >
-                {{ $t(props.item.probability) }}
-              </v-chip>
-            </td>
+            <td>{{ props.item.spenderid }}</td>
           </tr>
-          <tr v-if="opened.includes(props.item.donorID)" :class="{ opened: opened.includes(props.item.donorID) }">
-            <td colspan="4">
+          <tr v-if="opened.includes(props.item.spenderid)" :class="{ opened: opened.includes(props.item.spenderid) }">
+            <td colspan="2">
               <table style="width: 100%;">
                 <thead style="text-align: left;">
                   <tr>
@@ -64,27 +54,17 @@
                     <th>Konto</th>
                     <th>Gegenkonto</th>
                     <th>Kostenstelle 1</th>
-                    <th>Wahrscheinlichkeit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(subitem, i) in props.item.donations" v-bind:key="i">
-                    <td>{{ subitem.misMatchedRecord["Belegnummer 2"]}}</td>
-                    <td>{{ subitem.misMatchedRecord.Buchungstext }}</td>
-                    <td>{{ makeEuro(subitem.misMatchedRecord.Betrag) }}</td>
-                    <td>{{ subitem.misMatchedRecord.Datum }}</td>
-                    <td>{{ subitem.misMatchedRecord.Konto }}</td>
-                    <td>{{ subitem.misMatchedRecord.Gegenkonto }}</td>
-                    <td>{{ subitem.misMatchedRecord["Kostenstelle 1"]}}</td>
-                    <td>
-                      <v-chip
-                        :color="getChipColor(subitem.probability)"
-                        text-color="white"
-                        small
-                      >
-                        {{ $t(subitem.probability) }}
-                      </v-chip>
-                    </td>
+                  <tr v-for="(subitem, i) in props.item.spenden" v-bind:key="i">
+                    <td>{{ subitem["Belegnummer 2"]}}</td>
+                    <td>{{ subitem.Buchungstext }}</td>
+                    <td>{{ makeEuro(subitem.Betrag) }}</td>
+                    <td>{{ subitem.Datum }}</td>
+                    <td>{{ subitem.Konto }}</td>
+                    <td>{{ subitem.Gegenkonto }}</td>
+                    <td>{{ subitem["Kostenstelle 1"]}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -102,15 +82,15 @@
 <script>
 import currencyFormater from '../../utilities/currencyFormater'
 export default {
-  name: "MisMatchedView",
+  name: "NoAddisonInCtView",
   props: {
-    mismatches: {
+    spenderlist: {
       type: Array,
       default: () => []
     },
     title: {
       type: String,
-      default: "MisMatched Personen"
+      default: "No Addison Spender ID in Churchtools"
     }
   },
   data: () => ({
@@ -120,15 +100,13 @@ export default {
     },
     headers: [
       { text: "", value: 'blank'},
-      { text: "Spender ID", value: "donorID" },
-      { text: "Spender", value: "donor" },
-      { text: "Wahrscheinlichkeit", value: "probability" },
+      { text: "Spender ID", value: "spenderid" },
     ],
     search: "",
    }),
    computed: {
     pages() {
-      return this.pagination.rowsPerPage ? Math.ceil(this.mismatches.length / this.pagination.rowsPerPage) : 0;
+      return this.pagination.rowsPerPage ? Math.ceil(this.spenderlist.length / this.pagination.rowsPerPage) : 0;
     }
   },
   methods: {

@@ -46,8 +46,13 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let missingCtOptigenNrs = donorSpenderIds.reduce((matches, spenderId) => {
       let matchingRecords = ctPersonFinder(person => person.optigem_nr == spenderId);
       if (matchingRecords.length == 0) {
+        let _item = {
+          "spenderid": spenderId,
+          "spenden" : []
+        }
         let addisonMissingInCT = addisonFinder(rec => rec[addisonSpenderID] == spenderId);
-        addisonMissingInCT.map((item) => {matches.push(item)});
+        addisonMissingInCT.map((item) => {_item.spenden.push(item)});
+        matches.push(_item)
       }
       return matches;
     }, []);

@@ -24,6 +24,8 @@ export default
   'backToAddisonButton': 'Zurück zu Excel Datei hochladen',
   'reviewTitle' : 'Dateien prüfen',
   'donorTab' : 'Spender',
+  'reviewRecordsTab' : 'Zu überprüfende Datensätze',
+  'misMatchedTab' : 'Inkonsistent Spender/Spenden',
   'donorTabTitle': 'Einzel Bescheinigungen',
   'duplicatesTab': 'Doppelte Churchtool Optigem IDs',
   'duplicatesTabTitle': 'Doppelte Churchtool Optigem IDs',  
@@ -57,4 +59,7 @@ export default
   'E008' : '',
   'E009' : '',
   'E010' : '',
+  'high' : 'hoch',
+  'medium' : 'mittel',
+  'low' : 'niedrig',
 }
