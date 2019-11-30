@@ -80,7 +80,7 @@ let getDonorsFromAddisonExport = function(filepath) {
             "Betrag": parsePotentiallyGroupedFloat(rec["Betrag"]),
             "Datum": (rec["Datum"] == undefined) ? parseDate(rec["Belegdatum"]) : parseDate(rec["Datum"]),
             "Konto": (rec["Konto"] == undefined) ? rec["Gegenkonto"] : rec["Konto"],
-            "Gegenkonto": (rec["Konto"] == undefined) ? rec["Kontonummer"] : rec["Gegenkonto"],
+            "Gegenkonto": (rec["Gegenkonto"] == undefined) ? rec["Kontonummer"] : rec["Gegenkonto"],
             "Kostenstelle 1": (rec["Kostenstelle 1"] == undefined) ? rec["Kost 1"] : rec["Kostenstelle 1"] 
           }
           return _rec

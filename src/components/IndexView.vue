@@ -42,6 +42,7 @@
                       type="password"
                       :placeholder="$t('passwordPlaceholder')"
                       required
+                      v-on:keyup.enter="loginUser"
                     ></v-text-field>
                   </v-form>
                 </v-flex>
