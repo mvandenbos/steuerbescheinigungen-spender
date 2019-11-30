@@ -5,6 +5,7 @@ const Store = require('electron-store');
 const store = new Store();
 const settingsFilePath = path.join(__dirname, "", "../settings/settings.json");
 const templateFilePath = path.join(__dirname, "", "../template/template.json");
+const dialog = require('electron').remote.dialog
 const keys = require('../config/LocalForageKeys').default
 
 const isDataDoesNotExists = function (data) {
@@ -84,9 +85,29 @@ const resetItem = function (localStore, key, vStore = null, command = null) {
   }
 }
 
+const exportLocalJSONFile = function (localStore, key) {
+  dialog.showSaveDialog(
+    {
+      defaultPath: "~/" + key + "_EXPORT.json",
+      filters: [{
+        name: 'JSON',
+        extensions: ['json']
+      }]
+    }, function(file_path) {
+      if (file_path) {
+        let content = readFromUserDataAndLocalStorage(localStore, key)
+        fs.writeFileSync(file_path, JSON.stringify(content), 'utf-8');
+      }
+      else {
+        console.error(errors.E002);
+      }
+    });
+  }
+
 module.exports = {
   save: saveToUserDataAndLocalStorage,
   get: readFromUserDataAndLocalStorage,
   resetAll: resetAll,
-  resetItem: resetItem
+  resetItem: resetItem,
+  exportJSONFile: exportLocalJSONFile
 }

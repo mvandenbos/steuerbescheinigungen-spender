@@ -62,4 +62,6 @@ export default
     'high' : 'high',
     'medium' : 'medium',
     'low' : 'low',
+    'import' : 'Import',
+    'export' : 'Export',
   }

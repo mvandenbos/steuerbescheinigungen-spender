@@ -3,7 +3,13 @@
     <v-toolbar dark fixed color="accent">
       <v-toolbar-title>Edit Template</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items>
+      <v-toolbar-items>        
+        <!-- <v-btn dark flat @click="exportSettings()">
+          <v-icon>import_export</v-icon>&nbsp;{{ $t('import') }}
+        </v-btn>         -->
+        <v-btn dark flat @click="exportSettings()">
+          <v-icon>get_app</v-icon>&nbsp;{{ $t('export') }}
+        </v-btn>        
         <v-btn dark flat @click="resetLocalTemplate()">
           <v-icon>refresh</v-icon>&nbsp;{{ $t('resetToDefault') }}
         </v-btn>
@@ -337,7 +343,13 @@ export default {
     },
     resetLocalTemplate: function () {
       localFileManager.resetItem(localStore, keys.TEMPLATE, this.$store, 'UPDATE_TEMPLATE')
-    }
+    },
+    importSettings: function () {
+
+    },
+    exportSettings: function () {
+      localFileManager.exportJSONFile(localStore, keys.TEMPLATE);
+    },
   },
   beforeMount(){
     //this.loadData()

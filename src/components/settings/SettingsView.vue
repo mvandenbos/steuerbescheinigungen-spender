@@ -4,7 +4,26 @@
         <h2 class="title">{{ $t('title') }}</h2>
         <v-spacer></v-spacer>
         <span class="text-xs-right">Version {{ getAppVersion() }}</span>
-    </v-toolbar>
+        <v-menu bottom left style="z-index:999;">
+          <v-btn slot="activator" icon dark>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <!-- <v-list-tile  @click="importSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary >import_export</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('import')}}</v-list-tile-title>
+            </v-list-tile> -->
+            <v-list-tile  @click="exportSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>get_app</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('export')}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+    </v-toolbar>   
     <v-card-text>
       <h2 class="py-2">
         {{ $t('settings') }}
@@ -102,7 +121,13 @@ export default {
     },
     resetLocalSettings: function () {
       localFileManager.resetItem(localStore, keys.SETTINGS, this.$store, 'UPDATE_SETTINGS')
-    }
+    },
+    importSettings: function () {
+
+    },
+    exportSettings: function () {
+      localFileManager.exportJSONFile(localStore, keys.SETTINGS);
+    },
   }
 }
 </script>
