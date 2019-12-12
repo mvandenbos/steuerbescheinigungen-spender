@@ -1,6 +1,9 @@
 const q = require('q');
 const xlsx = require("xlsx");
 import errors from '../config/errors'
+const isError = function(e){
+  return e && e.stack && e.message;
+ }
 
 function parseDate(input) {
   var parts = input.match(/(\d+)/g);
@@ -93,7 +96,14 @@ let getDonorsFromAddisonExport = function(filepath) {
           deferred.reject({message: errors.E003})
         }
       } catch (e){
-        deferred.reject({message: e})
+        let _error
+        if (!isError(e)) {          
+          _error = String(e)
+        }
+        else {
+          _error = e.message
+        }
+        deferred.reject({message: _error})
       }
     }
     else {
