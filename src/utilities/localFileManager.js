@@ -8,6 +8,25 @@ const templateFilePath = path.join(__dirname, "", "../template/template.json");
 const dialog = require('electron').remote.dialog
 const keys = require('../config/LocalForageKeys').default
 
+const recurse = function(o, fn) {
+  for (var i in o) {
+    fn.apply(this,[i,o[i],o]);  
+    if (o[i] !== null && typeof(o[i])=="object") {
+      recurse(o[i], fn);
+    }
+  }
+}
+
+const updateFromImport = function (toUpdateJSON, fromImportJSON) {
+  recurse(toUpdateJSON, function(k, v, o) {
+    recurse(fromImportJSON, function(k2, v2) {
+      if (k2 == k) {
+        o[k] = v2
+      }
+    });
+  });
+}
+
 const isDataDoesNotExists = function (data) {
   if (data == undefined || data == null || data == "" || data == "null" ) {
     return true
@@ -33,7 +52,7 @@ const saveToUserDataAndLocalStorage = function (localStore, key, data) {
   try {
     //Save to localStorage
     let _data = JSON.stringify(data)
-    localStore.setItem(key, _data)
+    localStore.setItem(key, _data)    
     //Save to UserData
     store.set(key, _data);
   }
@@ -45,7 +64,6 @@ const saveToUserDataAndLocalStorage = function (localStore, key, data) {
 const readFromUserDataAndLocalStorage = function (localStore, key) {
   try {
     let _data
-    let _rawdata
     //Get from LocalStorage
     _data = localStore.getItem(key)
     if (isDataDoesNotExists(_data)) {
@@ -71,7 +89,7 @@ const resetAll = function (localStore, vStore) {
   keys.forEach(key => {
     let parsedData = JSON.parse(getDefaultItem(key)) 
     saveToUserDataAndLocalStorage(localStore, key, parsedData)
-    vStore.dispatch('UPDTAE_' + key, parsedData)
+    vStore.dispatch('UPDATE_' + key, parsedData)
   });  
 }
 
@@ -83,6 +101,29 @@ const resetItem = function (localStore, key, vStore = null, command = null) {
   if (vStore != null && command != null) {
     vStore.dispatch(command, parsedData)
   }
+}
+
+const importLocalJSONFile = function (localStore, key, vStore = null, command = null) {
+  dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{
+      name: 'JSON',
+      extensions: ['json']
+    }]
+  }, function (files) {
+      if (files !== undefined) {             
+        let data = JSON.parse(fs.readFileSync(files[0], 'utf8'));
+        //get default JSON data
+        let defaultJSON = readFromUserDataAndLocalStorage(localStore, key)
+        //compare and update default JSON from Import
+        updateFromImport(defaultJSON, data)
+        //save changes
+        saveToUserDataAndLocalStorage(localStore, key, defaultJSON)
+        if (vStore != null && command != null) {
+          vStore.dispatch(command, defaultJSON)
+        }
+      }
+  });
 }
 
 const exportLocalJSONFile = function (localStore, key) {
@@ -109,5 +150,6 @@ module.exports = {
   get: readFromUserDataAndLocalStorage,
   resetAll: resetAll,
   resetItem: resetItem,
-  exportJSONFile: exportLocalJSONFile
+  exportJSONFile: exportLocalJSONFile,
+  importJSONFile: importLocalJSONFile,
 }

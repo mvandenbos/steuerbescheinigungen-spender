@@ -9,12 +9,12 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
-            <!-- <v-list-tile  @click="importSettings()">
+            <v-list-tile  @click="importSettings()">
               <v-list-tile-avatar>
                 <v-icon primary >import_export</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-title>{{$t('import')}}</v-list-tile-title>
-            </v-list-tile> -->
+            </v-list-tile>
             <v-list-tile  @click="exportSettings()">
               <v-list-tile-avatar>
                 <v-icon primary fab>get_app</v-icon>
@@ -123,7 +123,7 @@ export default {
       localFileManager.resetItem(localStore, keys.SETTINGS, this.$store, 'UPDATE_SETTINGS')
     },
     importSettings: function () {
-
+      localFileManager.importJSONFile(localStore, keys.SETTINGS, this.$store, 'UPDATE_SETTINGS')
     },
     exportSettings: function () {
       localFileManager.exportJSONFile(localStore, keys.SETTINGS);
