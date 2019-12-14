@@ -165,6 +165,7 @@ function addAnlageHeader(doc, person, templateData) {
   
   doc.fontSize(fontSizeDefault).font('FontBold')
   .text(templateData.report.title, { 'width': pageWidth, 'align': 'left'})
+  .font('FontNormal')
   .text(templateData.report.subtitle, { 'width': pageWidth, 'align': 'left'})
   .moveDown(2);
 
