@@ -210,11 +210,16 @@
                   <p v-for="(p, key) in template.letter.body" v-bind:key="key" v-if="p!=''"  :id="'template.letter.body.'+ key" v-bind="attributes(`template-letter-body-${key}`)">{{p}}</p>
                 </div>
                 <div class="mt-4">
-                  <v-layout>
+                  <v-layout v-bind:class="{'layout-two-signatures':(template.letter.signature.cashier != '')}">
                     <v-flex xs-6>
                       <span id="template.letter.signature.city" template-letter-signature-city>{{template.letter.signature.city}}</span> den <span template-letter-signature-date>{{getFullDate(template.letter.signature.date)}}</span>
                     </v-flex>
-                    <v-flex xs-6 class="text-xs-center">
+                    <v-flex xs-6 class="text-xs-center signature-block signature-block-cashier" v-if="template.letter.signature.cashier != ''">
+                      <hr>
+                      <span id="template.letter.signature.cashier" template-letter-signature-cashier>{{template.letter.signature.cashier}}</span><br>
+                      <span template-name>{{template.name}}</span>
+                    </v-flex>
+                    <v-flex xs-6 class="text-xs-center signature-block signature-block-pastor">
                       <hr>
                       <span id="template.letter.signature.pastor" template-letter-signature-pastor>{{template.letter.signature.pastor}}</span><br v-if="template.letter.signature.pastor != ''">
                       <span template-name>{{template.name}}</span>
@@ -403,6 +408,18 @@ export default {
     line-height: 14px;
     margin-bottom: 5px;
     padding: 0px;
+  }
+  .signature-block{
+    display: inline-block;
+    width: 50%;
+    padding: 20px 35px;
+  }
+  .signature-block-cashier{
+    float: left;
+  }
+
+  .layout-two-signatures{
+    display: block;
   }
 
   .templateTable {

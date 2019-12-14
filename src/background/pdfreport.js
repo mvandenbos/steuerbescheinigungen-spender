@@ -114,19 +114,32 @@ function addSignatureBlock(doc, templateData) {
   doc.fontSize(fontSizeDefault)
 
   doc.text(templateData.letter.signature.city + ' den ' + fullDate, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'left'})
-  .moveDown(0.75)
-  .moveTo(doc.x + (pageWidth/2) + 25, doc.y - fontSizeDefault)
+  .moveDown(templateData.letter.signature.cashier == "" ? 0.75 : 3);
+
+
+  //Signature Left
+  if (templateData.letter.signature.cashier != "") {
+    doc.moveTo(doc.x + 25, doc.y - fontSizeDefault)
+    .lineTo( doc.x + 225, doc.y - fontSizeDefault)
+    .lineWidth(1)
+    .stroke()
+
+    doc.text(templateData.letter.signature.cashier, doc.x, doc.y - 2, { 'width': pageWidth /2, 'align': 'center'})
+    .text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'})
+    .moveUp(2);
+  }
+
+  //Signature Right
+  doc.moveTo(doc.x + (pageWidth/2) + 25, doc.y - fontSizeDefault)
   .lineTo( doc.x + (pageWidth/2) + 225, doc.y - fontSizeDefault)
   .lineWidth(1)
   .stroke()
 
   if (templateData.letter.signature.pastor != "") {
-    doc.text(templateData.letter.signature.pastor, doc.x + (pageWidth/2), doc.y - 2, { 'width': pageWidth /2, 'align': 'center'})
-    .text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'});
+    doc.text(templateData.letter.signature.pastor, doc.x + (pageWidth/2), doc.y - 2, { 'width': pageWidth /2, 'align': 'center'});
+    //.text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'});
   }
-  else {
-    doc.text(templateData.name, doc.x + (pageWidth/2), doc.y, { 'width': pageWidth /2, 'align': 'center'});
-  } 
+  doc.text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'});
 }
 function addAnlageHeader(doc, person, templateData) {
   

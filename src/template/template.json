@@ -29,7 +29,7 @@
       "paragraph08": "",
       "paragraph09": ""
     },
-    "signature": { "city": "Frankfurt am Main", "date": "", "pastor": "Pastor Mustermann" }
+    "signature": { "city": "Frankfurt am Main", "date": "", "pastor": "Pastor Mustermann", "cashier": "" }
   },
   "report": { "title": "Anlage zur Sammelbestätigung", "formOfAddress": "Anlage für:" },
   "reportsettings": { "showSpenderNr": true },
