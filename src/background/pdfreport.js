@@ -14,6 +14,9 @@ const pageMargin = 40
 const pageWidth = 595.28 - (pageMargin * 2)
 const filePath = path.join(__dirname, "..", "/template/template.json");
 
+import keys from '../config/LocalForageKeys'
+import localFileManager from '../utilities/localFileManager'
+
 let fonts;
 
 if (isDevMode) {
@@ -38,8 +41,7 @@ else {
 }
 
 function getTemplateData () {
-  let rawdata = fs.readFileSync(filePath);  
-  let data = JSON.parse(rawdata);  
+  let data = localFileManager.get(window.localStorage, keys.TEMPLATE);
   return data
 }
 
