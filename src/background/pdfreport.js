@@ -103,6 +103,13 @@ function addSignatureBlock(doc, templateData) {
   let x = doc.x;
   let y = doc.y;
   let fullDate;
+  let signatureLineStart = (pageWidth / 3)
+  let signatureLineEnd = ((pageWidth / 3) * 2)
+  let signatureWidth = ((pageWidth / 3) * 2)
+
+  if (templateData.letter.signature.cashier != "" && templateData.letter.signature.pastor != "") {
+    signatureWidth = (pageWidth / 3)
+  }
 
   if (templateData.letter.signature.date != "" && templateData.letter.signature.date != undefined) {
     fullDate = templateData.letter.signature.date 
@@ -113,33 +120,46 @@ function addSignatureBlock(doc, templateData) {
   }
   doc.fontSize(fontSizeDefault)
 
-  doc.text(templateData.letter.signature.city + ' den ' + fullDate, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'left'})
-  .moveDown(templateData.letter.signature.cashier == "" ? 0.75 : 3);
+  doc.text(templateData.letter.signature.city + ' den ' + fullDate, doc.x, doc.y, { 'width': signatureWidth, 'align': 'left'})
+  .moveDown(0.75);
 
-
-  //Signature Left
-  if (templateData.letter.signature.cashier != "") {
-    doc.moveTo(doc.x + 25, doc.y - fontSizeDefault)
-    .lineTo( doc.x + 225, doc.y - fontSizeDefault)
+  //Draw Lines
+  if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
+    doc.moveTo(doc.x + signatureLineStart, doc.y - fontSizeDefault)
+    .lineTo( doc.x + signatureLineEnd  - 5, doc.y - fontSizeDefault)
     .lineWidth(1)
     .stroke()
-
-    doc.text(templateData.letter.signature.cashier, doc.x, doc.y - 2, { 'width': pageWidth /2, 'align': 'center'})
-    .text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'})
+    
+    doc.moveTo(doc.x + signatureLineEnd + 5, doc.y - fontSizeDefault)
+    .lineTo( doc.x + signatureLineEnd + signatureWidth, doc.y - fontSizeDefault)
+    .lineWidth(1)
+    .stroke()
+  }
+  else {
+    doc.moveTo(doc.x + signatureLineStart, doc.y - fontSizeDefault)
+    .lineTo( doc.x + signatureLineStart + signatureLineEnd, doc.y - fontSizeDefault)
+    .lineWidth(1)
+    .stroke()
+  }
+  //Add Text
+  if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
+    doc.text(templateData.letter.signature.cashier, doc.x + signatureWidth - 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
+    .text(templateData.name  + " 1", doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
+    .moveUp(2)
+    doc.text(templateData.letter.signature.pastor, doc.x + signatureWidth + 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
+    .text(templateData.name  + " 1", doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
     .moveUp(2);
   }
-
-  //Signature Right
-  doc.moveTo(doc.x + (pageWidth/2) + 25, doc.y - fontSizeDefault)
-  .lineTo( doc.x + (pageWidth/2) + 225, doc.y - fontSizeDefault)
-  .lineWidth(1)
-  .stroke()
-
-  if (templateData.letter.signature.pastor != "") {
-    doc.text(templateData.letter.signature.pastor, doc.x + (pageWidth/2), doc.y - 2, { 'width': pageWidth /2, 'align': 'center'});
-    //.text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'});
+  else {
+    if (templateData.letter.signature.pastor != "" || templateData.letter.signature.cashier != "") {
+      let _text = templateData.letter.signature.pastor != "" ? templateData.letter.signature.pastor : templateData.letter.signature.cashier
+      doc.text( _text, doc.x + signatureWidth / 2, doc.y, { 'width': signatureWidth, 'align': 'center'});
+      doc.text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'});
+    }
+    else {
+      doc.text(templateData.name, doc.x + signatureWidth / 2, doc.y, { 'width': signatureWidth, 'align': 'center'});
+    }
   }
-  doc.text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'});
 }
 function addAnlageHeader(doc, person, templateData) {
   
