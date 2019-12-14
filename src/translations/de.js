@@ -41,7 +41,7 @@ export default
   'missingDonorsTab' : 'Spender',
   'refreshData': 'Refresh Dateien',
   'resetToDefault': 'Auf Standard zurücksetzen',
-  'editTemplate': 'Vorlage bearbeiten',
+  'editTemplate': 'Vorlage',
   'settings': 'Einstellungen',
   'chuchname': 'Gemeindename',
   'churchtoolsURL': 'Churchtools Webseite',

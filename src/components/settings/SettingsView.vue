@@ -9,6 +9,7 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
+            <v-subheader>{{$t('settings')}}</v-subheader>
             <v-list-tile  @click="importSettings()">
               <v-list-tile-avatar>
                 <v-icon primary >import_export</v-icon>
@@ -21,13 +22,18 @@
               </v-list-tile-avatar>
               <v-list-tile-title>{{$t('export')}}</v-list-tile-title>
             </v-list-tile>
+            <v-list-tile  @click="resetLocalSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>refresh</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('resetToDefault')}}</v-list-tile-title>
+            </v-list-tile>
           </v-list>
         </v-menu>
     </v-toolbar>   
     <v-card-text>
       <h2 class="py-2">
         {{ $t('settings') }}
-        <v-btn flat small color="error" @click="resetLocalSettings">{{ $t('resetToDefault') }}</v-btn>
       </h2>
       <v-text-field :label="$t('chuchname')" type="text" v-model="settings.churchname" required></v-text-field>
       <v-text-field :label="$t('churchtoolsURL')" type="text" v-model="settings.churchtoolshost" required></v-text-field>

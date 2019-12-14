@@ -1,24 +1,41 @@
 <template>
   <v-card>
     <v-toolbar dark fixed color="accent">
-      <v-toolbar-title>Edit Template</v-toolbar-title>
+      <v-toolbar-title>{{$t('editTemplate')}}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items>        
-        <!-- <v-btn dark flat @click="exportSettings()">
-          <v-icon>import_export</v-icon>&nbsp;{{ $t('import') }}
-        </v-btn>         -->
-        <v-btn dark flat @click="exportSettings()">
-          <v-icon>get_app</v-icon>&nbsp;{{ $t('export') }}
-        </v-btn>        
-        <v-btn dark flat @click="resetLocalTemplate()">
-          <v-icon>refresh</v-icon>&nbsp;{{ $t('resetToDefault') }}
-        </v-btn>
+      <v-toolbar-items>
         <v-btn dark flat @click="close()">
           <v-icon>close</v-icon>&nbsp;{{ $t('cancel') }}
         </v-btn>
         <v-btn dark flat @click="save">
           <v-icon>save</v-icon>&nbsp;{{ $t('save') }}
         </v-btn>
+        <v-menu bottom left style="z-index:999;">
+          <v-btn slot="activator" icon dark>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-subheader>{{$t('editTemplate')}}</v-subheader>
+            <v-list-tile  @click="importSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary >import_export</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('import')}}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile  @click="exportSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>get_app</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('export')}}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile  @click="resetLocalTemplate()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>refresh</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('resetToDefault')}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>        
       </v-toolbar-items>            
     </v-toolbar>
     <v-layout fluid wrap style="background-color: #EFEFEF; margin-top: 65px;">
@@ -345,7 +362,7 @@ export default {
       localFileManager.resetItem(localStore, keys.TEMPLATE, this.$store, 'UPDATE_TEMPLATE')
     },
     importSettings: function () {
-
+      localFileManager.importJSONFile(localStore, keys.TEMPLATE, this.$store, 'UPDATE_TEMPLATE')
     },
     exportSettings: function () {
       localFileManager.exportJSONFile(localStore, keys.TEMPLATE);

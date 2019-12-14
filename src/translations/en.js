@@ -41,7 +41,7 @@ export default
     'missingDonorsTab' : 'Donors',
     'refreshData': 'Refresh Data',
     'resetToDefault': 'Reset to Default',
-    'editTemplate': 'Edit Template',
+    'editTemplate': 'Template',
     'settings': 'Settings',
     'chuchname': 'Church Name',
     'churchtoolsURL': 'Churchtools Website',
