@@ -15,8 +15,8 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": "FCG-Frankfurt",
-  "homepage": "https://fcg-frankfurt.de/",
+  "author": "mvandenbos",
+  "homepage": "https://github.com/mvandenbos/steuerbescheinigungen-spender",
   "license": "GPL-3.0",
   "config": {
     "forge": {
