@@ -278,7 +278,7 @@ async function generatePDFReport (reports) {
   let templateData = getTemplateData();
   let pdf = getPDFDocument(reports, templateData)
   let year = (new Date()).getFullYear();
-  let filePath = (reports.length > 1) ? "~/fcg-spendenbescheinigung-" + templateData.year + ".pdf" : "~/fcg-spendenbescheinigung-" + templateData.year + "-" + reports[0].name + "-(" + reports[0].optigem_nr  + ").pdf"
+  let filePath = (reports.length > 1) ? "~/Spendenbescheinigung-" + templateData.year + ".pdf" : "~/Spendenbescheinigung-" + templateData.year + "-" + reports[0].name + "-(" + reports[0].optigem_nr  + ").pdf"
   
   dialog.showSaveDialog(
     {
