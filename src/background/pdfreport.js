@@ -56,6 +56,15 @@ function addLetterHead(doc, templateData) {
     } 
   });
 }
+
+function addReturnAddress(doc, templateData) {
+  if (templateData.returnAddress != "") {
+    doc.fontSize(fontSizeSmall)
+    .text(templateData.returnAddress, {'align': 'left'})
+  }
+  doc.moveDown(3)
+}
+
 function addAddress(doc, person, mitAnrede = true) {
   doc.fontSize(fontSizeDefault)
   if (person.anrede && mitAnrede) {
@@ -240,9 +249,10 @@ function getPDFDocument(reports, templateData) {
   doc.font('FontNormal');
   reports.forEach((report, index) => {
     addLetterHead(doc, templateData);
-    doc.moveDown(5);
+    doc.moveDown(3);
+    addReturnAddress(doc, templateData);
     addAddress(doc, report);
-    doc.moveDown(5);
+    doc.moveDown(4);
     addHeader(doc, templateData);
     doc.moveDown(0.5);
     doc.moveTo(pageMargin, doc.y)

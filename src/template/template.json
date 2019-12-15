@@ -5,8 +5,9 @@
     "subheader01": "Grosse Strasse, 60000 Frankfurt am Main",
     "subheader02": "Telefon: 069 - 11 11 11,  Telefax: 069 – 22 22 22",
     "subheader03": "Internet: www.deine-gemeinde-homepage.de,  E-Mail: kontakt@deine-gemeinde-homepage.de",
-    "subheader04": ""
-  },
+    "subheader04": "" 
+  },  
+  "returnAddress": "Deine Gemeinde Name, Grosse Strasse, 60000 Frankfurt am Main",
   "letter": {
     "header": {
       "title": "Sammelbestätigung über Geldzuwendungen/Mitgliedsbeitrag",

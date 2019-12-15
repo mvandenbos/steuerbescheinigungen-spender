@@ -73,6 +73,20 @@
             </v-card-text>
           </v-card>
           <v-divider></v-divider>
+
+         <h2 class="my-4">Return Address</h2>
+          <v-card>
+            <v-card-text>
+              <v-text-field
+                label="ReturnAddress"
+                v-model="template.returnAddress"
+                @focus="highlightElement('template-returnaddress')"
+                template-returnaddress         
+              ></v-text-field>
+            </v-card-text>
+          </v-card>
+          <v-divider></v-divider>
+
           <h2 class="my-4">Letter</h2>
           <v-card>
             <v-card-text>
@@ -182,6 +196,7 @@
                 </div>
                 <div class="mt-4">
                   <br>
+                  <p v-show="template.returnAddress != ''" class="returnAddress" template-returnaddress>{{template.returnAddress}}</p>
                   <br>
                   Herr<br>
                   Max Musterman<br>
@@ -413,6 +428,9 @@ export default {
     line-height: 14px;
     margin-bottom: 5px;
     padding: 0px;
+  }
+  .returnAddress {
+    font-size: 10px;
   }
   .signature-block{
     padding: 20px 0 0 5px;
