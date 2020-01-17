@@ -8,19 +8,19 @@ const templateFilePath = path.join(__dirname, "", "../template/template.json");
 const dialog = require('electron').remote.dialog
 const keys = require('../config/LocalForageKeys').default
 
-const recurse = function(o, fn) {
+const recurse = function(o, p, fn) {
   for (var i in o) {
-    fn.apply(this,[i,o[i],o]);  
+    fn.apply(this,[i,o[i],o, p]);  
     if (o[i] !== null && typeof(o[i])=="object") {
-      recurse(o[i], fn);
+      recurse(o[i], i, fn);
     }
   }
 }
 
 const updateFromImport = function (toUpdateJSON, fromImportJSON) {
-  recurse(toUpdateJSON, function(k, v, o) {
-    recurse(fromImportJSON, function(k2, v2) {
-      if (k2 == k) {
+  recurse(toUpdateJSON, null, function(k, v, o, p) {
+    recurse(fromImportJSON, k, function(k2, v2, o2, p2) {
+      if (k2 == k && typeof(v2)!="object" && p==p2) {
         o[k] = v2
       }
     });
