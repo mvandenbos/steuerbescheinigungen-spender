@@ -112,13 +112,19 @@ function addSignatureBlock(doc, templateData) {
   let x = doc.x;
   let y = doc.y;
   let fullDate;
-  let signatureLineStart = (pageWidth / 3)
-  let signatureLineEnd = ((pageWidth / 3) * 2)
-  let signatureWidth = ((pageWidth / 3) * 2)
 
-  if (templateData.letter.signature.cashier != "" && templateData.letter.signature.pastor != "") {
-    signatureWidth = (pageWidth / 3)
+  let dateTextWidth = (pageWidth / 4)
+  let signatureLineStart = (pageWidth / 4)
+  let signatureWidth = ((pageWidth - dateTextWidth) / 2)
+
+  //Adjust for single signature
+  if (templateData.letter.signature.cashier == "" || templateData.letter.signature.pastor == "") {
+    dateTextWidth = (pageWidth / 3)
+    signatureLineStart = (pageWidth / 3)    
+    signatureWidth = ((pageWidth / 3) * 2)
   }
+
+  let signatureLineEnd = signatureLineStart + ((pageWidth - dateTextWidth) / 2)
 
   if (templateData.letter.signature.date != "" && templateData.letter.signature.date != undefined) {
     fullDate = templateData.letter.signature.date 
@@ -127,12 +133,12 @@ function addSignatureBlock(doc, templateData) {
     let date = new Date() 
     fullDate = date.getDate().toString().padStart(2, "0") + '.' + (date.getMonth() + 1).toString().padStart(2, "0") + '.' + date.getFullYear()
   }
+  //Add city and date
   doc.fontSize(fontSizeDefault)
-
-  doc.text(templateData.letter.signature.city + ' den ' + fullDate, doc.x, doc.y, { 'width': signatureWidth, 'align': 'left'})
-  .moveDown(0.75);
-
+  doc.text(templateData.letter.signature.city,doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
+  doc.text(fullDate, doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
   //Draw Lines
+  //two signatures
   if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
     doc.moveTo(doc.x + signatureLineStart, doc.y - fontSizeDefault)
     .lineTo( doc.x + signatureLineEnd  - 5, doc.y - fontSizeDefault)
@@ -144,6 +150,7 @@ function addSignatureBlock(doc, templateData) {
     .lineWidth(1)
     .stroke()
   }
+  //One Signature
   else {
     doc.moveTo(doc.x + signatureLineStart, doc.y - fontSizeDefault)
     .lineTo( doc.x + signatureLineStart + signatureLineEnd, doc.y - fontSizeDefault)
@@ -151,22 +158,26 @@ function addSignatureBlock(doc, templateData) {
     .stroke()
   }
   //Add Text
+  //Two signatures
   if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
-    doc.text(templateData.letter.signature.cashier, doc.x + signatureWidth - 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
-    .text(templateData.name  + " 1", doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
+    doc.text(templateData.letter.signature.cashier, doc.x + signatureLineStart - 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
+    .text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
     .moveUp(2)
     doc.text(templateData.letter.signature.pastor, doc.x + signatureWidth + 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
-    .text(templateData.name  + " 1", doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
+    .text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
     .moveUp(2);
   }
+  //One Signature
   else {
+    //Name for one signature exists
     if (templateData.letter.signature.pastor != "" || templateData.letter.signature.cashier != "") {
       let _text = templateData.letter.signature.pastor != "" ? templateData.letter.signature.pastor : templateData.letter.signature.cashier
-      doc.text( _text, doc.x + signatureWidth / 2, doc.y, { 'width': signatureWidth, 'align': 'center'});
+      doc.text( _text, doc.x + dateTextWidth, doc.y, { 'width': signatureWidth, 'align': 'center'});
       doc.text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'});
     }
+    //Just use name of organization using the template
     else {
-      doc.text(templateData.name, doc.x + signatureWidth / 2, doc.y, { 'width': signatureWidth, 'align': 'center'});
+      doc.text(templateData.name, doc.x + dateTextWidth, doc.y, { 'width': signatureWidth, 'align': 'center'});
     }
   }
 }
