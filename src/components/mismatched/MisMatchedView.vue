@@ -116,7 +116,8 @@ export default {
   data: () => ({
     opened: [],
     pagination: {
-      rowsPerPage: 25
+      rowsPerPage: 25,
+      sortBy: "donor"
     },
     headers: [
       { text: "", value: 'blank'},

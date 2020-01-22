@@ -89,7 +89,8 @@ export default {
   data: () => ({
     opened: [],
     pagination: {
-      rowsPerPage: 25
+      rowsPerPage: 25,
+      sortBy: "duplicateID"
     },
     headers: [
       { text: "", value: 'blank'},

@@ -66,7 +66,8 @@ export default {
   },
   data: () => ({
     pagination: {
-      rowsPerPage: 25
+      rowsPerPage: 25,
+      sortBy: 'Buchungstext'
     },
     search: "",
     headers: [
