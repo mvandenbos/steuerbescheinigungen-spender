@@ -83,6 +83,7 @@ export default {
         console.log("quit-and-install")
       })
       ipcRenderer.on("error", (err) => {
+        console.log("ipcRenderer error")
         console.dir(err)
       })      
       this.checkForUpdate()
