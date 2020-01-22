@@ -4,11 +4,36 @@
         <h2 class="title">{{ $t('title') }}</h2>
         <v-spacer></v-spacer>
         <span class="text-xs-right">Version {{ getAppVersion() }}</span>
-    </v-toolbar>
+        <v-menu bottom left style="z-index:999;">
+          <v-btn slot="activator" icon dark>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-subheader>{{$t('settings')}}</v-subheader>
+            <v-list-tile  @click="importSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary >import_export</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('import')}}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile  @click="exportSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>get_app</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('export')}}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile  @click="resetLocalSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>refresh</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('resetToDefault')}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+    </v-toolbar>   
     <v-card-text>
       <h2 class="py-2">
         {{ $t('settings') }}
-        <v-btn flat small color="error" @click="resetLocalSettings">{{ $t('resetToDefault') }}</v-btn>
       </h2>
       <v-text-field :label="$t('chuchname')" type="text" v-model="settings.churchname" required></v-text-field>
       <v-text-field :label="$t('churchtoolsURL')" type="text" v-model="settings.churchtoolshost" required></v-text-field>
@@ -102,7 +127,13 @@ export default {
     },
     resetLocalSettings: function () {
       localFileManager.resetItem(localStore, keys.SETTINGS, this.$store, 'UPDATE_SETTINGS')
-    }
+    },
+    importSettings: function () {
+      localFileManager.importJSONFile(localStore, keys.SETTINGS, this.$store, 'UPDATE_SETTINGS')
+    },
+    exportSettings: function () {
+      localFileManager.exportJSONFile(localStore, keys.SETTINGS);
+    },
   }
 }
 </script>

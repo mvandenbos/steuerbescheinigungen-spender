@@ -14,6 +14,9 @@ const pageMargin = 40
 const pageWidth = 595.28 - (pageMargin * 2)
 const filePath = path.join(__dirname, "..", "/template/template.json");
 
+import keys from '../config/LocalForageKeys'
+import localFileManager from '../utilities/localFileManager'
+
 let fonts;
 
 if (isDevMode) {
@@ -38,8 +41,7 @@ else {
 }
 
 function getTemplateData () {
-  let rawdata = fs.readFileSync(filePath);  
-  let data = JSON.parse(rawdata);  
+  let data = localFileManager.get(window.localStorage, keys.TEMPLATE);
   return data
 }
 
@@ -54,6 +56,15 @@ function addLetterHead(doc, templateData) {
     } 
   });
 }
+
+function addReturnAddress(doc, templateData) {
+  if (templateData.returnAddress != "") {
+    doc.fontSize(fontSizeSmall)
+    .text(templateData.returnAddress, {'align': 'left'})
+  }
+  doc.moveDown(3)
+}
+
 function addAddress(doc, person, mitAnrede = true) {
   doc.fontSize(fontSizeDefault)
   if (person.anrede && mitAnrede) {
@@ -102,6 +113,19 @@ function addSignatureBlock(doc, templateData) {
   let y = doc.y;
   let fullDate;
 
+  let dateTextWidth = (pageWidth / 4)
+  let signatureLineStart = (pageWidth / 4)
+  let signatureWidth = ((pageWidth - dateTextWidth) / 2)
+
+  //Adjust for single signature
+  if (templateData.letter.signature.cashier == "" || templateData.letter.signature.pastor == "") {
+    dateTextWidth = (pageWidth / 3)
+    signatureLineStart = (pageWidth / 3)    
+    signatureWidth = ((pageWidth / 3) * 2)
+  }
+
+  let signatureLineEnd = signatureLineStart + ((pageWidth - dateTextWidth) / 2)
+
   if (templateData.letter.signature.date != "" && templateData.letter.signature.date != undefined) {
     fullDate = templateData.letter.signature.date 
   }
@@ -109,27 +133,60 @@ function addSignatureBlock(doc, templateData) {
     let date = new Date() 
     fullDate = date.getDate().toString().padStart(2, "0") + '.' + (date.getMonth() + 1).toString().padStart(2, "0") + '.' + date.getFullYear()
   }
+  //Add city and date
   doc.fontSize(fontSizeDefault)
-
-  doc.text(templateData.letter.signature.city + ' den ' + fullDate, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'left'})
-  .moveDown(0.75)
-  .moveTo(doc.x + (pageWidth/2) + 25, doc.y - fontSizeDefault)
-  .lineTo( doc.x + (pageWidth/2) + 225, doc.y - fontSizeDefault)
-  .lineWidth(1)
-  .stroke()
-
-  if (templateData.letter.signature.pastor != "") {
-    doc.text(templateData.letter.signature.pastor, doc.x + (pageWidth/2), doc.y - 2, { 'width': pageWidth /2, 'align': 'center'})
-    .text(templateData.name, doc.x, doc.y, { 'width': pageWidth /2, 'align': 'center'});
+  doc.text(templateData.letter.signature.city,doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
+  doc.text(fullDate, doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
+  //Draw Lines
+  //two signatures
+  if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
+    doc.moveTo(doc.x + signatureLineStart, doc.y - fontSizeDefault)
+    .lineTo( doc.x + signatureLineEnd  - 5, doc.y - fontSizeDefault)
+    .lineWidth(1)
+    .stroke()
+    
+    doc.moveTo(doc.x + signatureLineEnd + 5, doc.y - fontSizeDefault)
+    .lineTo( doc.x + signatureLineEnd + signatureWidth, doc.y - fontSizeDefault)
+    .lineWidth(1)
+    .stroke()
   }
+  //One Signature
   else {
-    doc.text(templateData.name, doc.x + (pageWidth/2), doc.y, { 'width': pageWidth /2, 'align': 'center'});
-  } 
+    doc.moveTo(doc.x + signatureLineStart, doc.y - fontSizeDefault)
+    .lineTo( doc.x + signatureLineStart + signatureLineEnd, doc.y - fontSizeDefault)
+    .lineWidth(1)
+    .stroke()
+  }
+  //Add Text
+  //Two signatures
+  if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
+    doc.text(templateData.letter.signature.cashier, doc.x + signatureLineStart - 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
+    .text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
+    .moveUp(2)
+    doc.text(templateData.letter.signature.pastor, doc.x + signatureWidth + 5, doc.y - 2, { 'width': signatureWidth, 'align': 'center'})
+    .text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'})
+    .moveUp(2);
+  }
+  //One Signature
+  else {
+    //Name for one signature exists
+    if (templateData.letter.signature.pastor != "" || templateData.letter.signature.cashier != "") {
+      let _text = templateData.letter.signature.pastor != "" ? templateData.letter.signature.pastor : templateData.letter.signature.cashier
+      doc.text( _text, doc.x + dateTextWidth, doc.y, { 'width': signatureWidth, 'align': 'center'});
+      doc.text(templateData.name, doc.x, doc.y, { 'width': signatureWidth, 'align': 'center'});
+    }
+    //Just use name of organization using the template
+    else {
+      doc.text(templateData.name, doc.x + dateTextWidth, doc.y, { 'width': signatureWidth, 'align': 'center'});
+    }
+  }
 }
 function addAnlageHeader(doc, person, templateData) {
   
   doc.fontSize(fontSizeDefault).font('FontBold')
   .text(templateData.report.title, { 'width': pageWidth, 'align': 'left'})
+  .font('FontNormal')
+  .text(templateData.report.subtitle, { 'width': pageWidth, 'align': 'left'})
   .moveDown(2);
 
   let startX = doc.x;
@@ -203,9 +260,10 @@ function getPDFDocument(reports, templateData) {
   doc.font('FontNormal');
   reports.forEach((report, index) => {
     addLetterHead(doc, templateData);
-    doc.moveDown(5);
+    doc.moveDown(3);
+    addReturnAddress(doc, templateData);
     addAddress(doc, report);
-    doc.moveDown(5);
+    doc.moveDown(4);
     addHeader(doc, templateData);
     doc.moveDown(0.5);
     doc.moveTo(pageMargin, doc.y)
@@ -241,7 +299,7 @@ async function generatePDFReport (reports) {
   let templateData = getTemplateData();
   let pdf = getPDFDocument(reports, templateData)
   let year = (new Date()).getFullYear();
-  let filePath = (reports.length > 1) ? "~/fcg-spendenbescheinigung-" + templateData.year + ".pdf" : "~/fcg-spendenbescheinigung-" + templateData.year + "-" + reports[0].name + "-(" + reports[0].optigem_nr  + ").pdf"
+  let filePath = (reports.length > 1) ? "~/Spendenbescheinigung-" + templateData.year + ".pdf" : "~/Spendenbescheinigung-" + templateData.year + "-" + reports[0].name + "-(" + reports[0].optigem_nr  + ").pdf"
   
   dialog.showSaveDialog(
     {

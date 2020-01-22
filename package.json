@@ -1,7 +1,7 @@
 {
   "name": "steuerbescheinigungen-spender",
   "productName": "Steuerbescheinigungen Spender",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "description": "die Steuerbescheinigungen Spender App fuer Churchtools und Addison/Excel Imports",
   "main": "src/index",
   "scripts": {
@@ -15,8 +15,8 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": "FCG-Frankfurt",
-  "homepage": "https://fcg-frankfurt.de/",
+  "author": "mvandenbos",
+  "homepage": "https://github.com/mvandenbos/steuerbescheinigungen-spender",
   "license": "GPL-3.0",
   "config": {
     "forge": {
@@ -68,6 +68,7 @@
     "pdfmake": "^0.1.37",
     "q": "^1.5.1",
     "restler": "^3.4.0",
+    "string-similarity": "^3.0.0",
     "underscore": "^1.9.1",
     "vue": "^2.5.10",
     "vue-form-generator": "^2.3.0",

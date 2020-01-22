@@ -1,5 +1,6 @@
 const q = require('q')
 const inWordsDe = require("in-words").de
+const stringSimilarity = require('string-similarity');
 import currencyFormater from '../utilities/currencyFormater'
 
 let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
@@ -45,8 +46,13 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let missingCtOptigenNrs = donorSpenderIds.reduce((matches, spenderId) => {
       let matchingRecords = ctPersonFinder(person => person.optigem_nr == spenderId);
       if (matchingRecords.length == 0) {
+        let _item = {
+          "spenderid": spenderId,
+          "spenden" : []
+        }
         let addisonMissingInCT = addisonFinder(rec => rec[addisonSpenderID] == spenderId);
-        addisonMissingInCT.map((item) => {matches.push(item)});
+        addisonMissingInCT.map((item) => {_item.spenden.push(item)});
+        matches.push(_item)
       }
       return matches;
     }, []);
@@ -62,21 +68,100 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     return missingCtOptigenNrs;
   };
 
+  const getDuplicateCtSpenderIDs = () => {
+    const map = new Map();
+    const duplicateSpenderIDs = []
+    for (const item of _ctPersons) {
+        if(map.has(item.optigem_nr) && item.optigem_nr != ""){        
+          let _duplicates = ctPersonFinder(person => person.optigem_nr == item.optigem_nr);
+          let _item = {
+            "duplicateID": item.optigem_nr,
+            "duplicates": _duplicates
+          }
+          duplicateSpenderIDs.push( _item)
+        }
+        else  {
+          map.set(item.optigem_nr, true);
+        }
+    }
+    return duplicateSpenderIDs
+  }
+
+  const getMisMatchedSpenderIDsInAddison = () => {
+    const misMatchedSpender = []
+    for (const id of donorSpenderIds) {
+      let _donations = addisonFinder(person => person[addisonSpenderID] == id);
+
+      const uniqueDonors = _donations.map(donation => {
+          return {
+            count: 1,
+            name: donation.Buchungstext
+          };
+        }).reduce((a, b) => {
+          a[b.name] = (a[b.name] || 0) + b.count;
+          return a;
+        }, {});
+    
+      const hasMostRecords = Object.keys(uniqueDonors).reduce(function(a, b){ return uniqueDonors[a] > uniqueDonors[b] ? a : b });
+      let _donor = _donations.find(donor => donor.Buchungstext == hasMostRecords)
+
+      let _suspiciousDonations = []
+      let _probability = "low"
+
+      for (const donor of _donations) {
+        let _similarity  =  stringSimilarity.compareTwoStrings(_donor.Buchungstext, donor.Buchungstext)
+        if (_similarity < 1) {
+          let _priority = "low"
+
+          if (_similarity < .5) {
+            _priority = "high"
+            _probability = "high"
+          }
+          if (_similarity >= .5 && _similarity < .7 ) {
+            _priority = "medium"
+            if( _probability != "high") _probability = "medium"
+          }
+          if (_similarity >= .7 && _similarity < 1) {
+            _priority = "low"
+            if( _probability != "high" && _probability != "medium") _probability = "low"
+          }
+
+          let _item = {
+            "misMatchedID": id,
+            "spenderRecord":_donor,
+            "misMatchedRecord": donor,
+            "similarity": _similarity,
+            "probability": _priority
+          }
+
+          _suspiciousDonations.push(_item)
+        }
+      }
+      if (_suspiciousDonations.length > 0) {
+        let _misMatchedRecord = {
+          "donorID": id,
+          "donor": hasMostRecords,          
+          "donations": _suspiciousDonations,
+          "probability": _probability
+        }
+        misMatchedSpender.push(_misMatchedRecord)
+      }
+    }
+    return misMatchedSpender
+  }
+
   const getDonationReportData = () => {
 
     let donors = matchingAddisonSpenderIdInChurchtools();
 
     let reportData = donors.map((donor) => {
-      var donations = _addisonData.filter(donation => 
-        donation[addisonSpenderID] == donor.optigem_nr
-      )
+      var donations = addisonFinder(donation => donation[addisonSpenderID] == donor.optigem_nr)
 
       let totalDonations = Math.abs(donations.reduce((total, donation) => {
         return total + parseFloat(donation.Betrag)
         }, 0.00
       ));
       
-
       var splitTotal = totalDonations.toFixed(2).toString().split('.')  
       var totalEuro = inWordsDe(parseInt(splitTotal[0]))        
       var totalCent = inWordsDe(parseInt(splitTotal[1]))
@@ -118,15 +203,35 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     });
 
     reportData.sort(function (a, b) {
-      var x =  a.name.toLowerCase();
-      var y =  b.name.toLowerCase();
-      if (x < y) {return -1;}
-      if (x > y) {return 1;}
-      return 0;
-    });
-
+      //Sort by Last Name, then First Name
+      if ( a.name.localeCompare(b.name) == 0) {
+        return a.vorname.localeCompare(b.vorname)
+      }
+      else {
+        return a.name.localeCompare(b.name) 
+      }
+    })
     return reportData;
   };
+
+  const getDuplicateDonorSpenderIDs = () => {
+    const map = new Map();
+    const duplicateSpenderIDs = []
+    for (const item of getDonationReportData()) {
+      if(map.has(item.optigem_nr) && item.optigem_nr != ""){        
+        let _duplicates = ctPersonFinder(person => person.optigem_nr == item.optigem_nr);
+        let _item = {
+          "duplicateID": item.optigem_nr,
+          "duplicates": _duplicates
+        }
+        duplicateSpenderIDs.push( _item)
+      }
+      else  {
+        map.set(item.optigem_nr, true);
+      }
+    }
+    return duplicateSpenderIDs
+  }
 
   let mergeChurchtoolsAndAddison  = () => {
     let matchingAddisonSpender = matchingAddisonSpenderIdInChurchtools()
@@ -134,13 +239,19 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     let noAddisonSpender = noAddisonSpenderIdInChurchtools()
     let noAddisonSpenderIdList= noAddisonSpenderIdInChurchtoolsIdList()
     let donationReportDataList = getDonationReportData()
+    let duplicateCTSpenderIDs = getDuplicateCtSpenderIDs()
+    let duplicateDonorSpenderIDs = getDuplicateDonorSpenderIDs()
+    let misMatchedSpenderIDsInAddison = getMisMatchedSpenderIDsInAddison()
 
     let data = {
       matchingAddisonSpenderIdInChurchtools: matchingAddisonSpender,
       noMatchingAddisonSpenderIdInChurchtools: noMatchingAddisonSpender,
       noAddisonSpenderIdInChurchtools: noAddisonSpender,
       noAddisonSpenderIdInChurchtoolsIdList: noAddisonSpenderIdList,
-      donationReportData: donationReportDataList
+      donationReportData: donationReportDataList,
+      duplicateCTSpenderIDs: duplicateCTSpenderIDs,
+      duplicateDonorSpenderIDs: duplicateDonorSpenderIDs,
+      misMatchedSpenderIDsInAddison: misMatchedSpenderIDsInAddison
     };
 
     return data;

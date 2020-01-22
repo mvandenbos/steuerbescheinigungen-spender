@@ -7,6 +7,7 @@
     "subheader03": "Internet: www.deine-gemeinde-homepage.de,  E-Mail: kontakt@deine-gemeinde-homepage.de",
     "subheader04": ""
   },
+  "returnAddress": "Deine Gemeinde Name, Grosse Strasse, 60000 Frankfurt am Main",
   "letter": {
     "header": {
       "title": "Sammelbestätigung über Geldzuwendungen/Mitgliedsbeitrag",
@@ -29,10 +30,21 @@
       "paragraph08": "",
       "paragraph09": ""
     },
-    "signature": { "city": "Frankfurt am Main", "date": "", "pastor": "Pastor Mustermann" }
+    "signature": {
+      "city": "Frankfurt am Main",
+      "date": "",
+      "pastor": "Pastor Mustermann",
+      "cashier": ""
+    }
   },
-  "report": { "title": "Anlage zur Sammelbestätigung", "formOfAddress": "Anlage für:" },
-  "reportsettings": { "showSpenderNr": true },
+  "report": {
+    "title": "Anlage zur Sammelbestätigung",
+    "subtitle": "",
+    "formOfAddress": "Anlage für:"
+  },
+  "reportsettings": {
+    "showSpenderNr": true
+  },
   "footer": {
     "title": "Hinweis",
     "content": {

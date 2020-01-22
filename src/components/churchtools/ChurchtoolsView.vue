@@ -66,7 +66,8 @@ export default {
   },
   data: () => ({
     pagination: {
-      rowsPerPage: 25
+      rowsPerPage: 25,
+      sortBy: "name"
     },
     headers: [
       { text: "SpenderId", value: "optigem_nr" },

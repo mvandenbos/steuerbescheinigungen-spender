@@ -6,9 +6,11 @@ const fs = require('fs')
 const path = require("path");
 const filePath = path.join(__dirname, "..", "/template/template.json");
 
+import keys from '../config/LocalForageKeys'
+import localFileManager from '../utilities/localFileManager'
+
 function getTemplateData () {
-  let rawdata = fs.readFileSync(filePath);  
-  let data = JSON.parse(rawdata);  
+  let data = localFileManager.get(window.localStorage, keys.TEMPLATE);
   return data
 }
 
@@ -35,7 +37,7 @@ function generateExcelReport (reports) {
 
   let ws1 = xlsx.utils.json_to_sheet(reports, { header: headerOrder })
   let wb = xlsx.utils.book_new()
-  xlsx.utils.book_append_sheet(wb, ws1, "FCG-Spender")
+  xlsx.utils.book_append_sheet(wb, ws1, "Spender")
 
   let templateData = getTemplateData();
 
@@ -44,7 +46,7 @@ function generateExcelReport (reports) {
       name: 'Excel',
       extensions: ['xlsx']
     }],
-    defaultPath: '~/fcg-spendenbescheinigung-' + templateData.year + '.xlsx'
+    defaultPath: '~/Spendenbescheinigung-' + templateData.year + '.xlsx'
   }, function(file_path) {
     if (file_path) {       
       var wopts = { bookType:'xlsx', bookSST:false, type:'buffer' }     

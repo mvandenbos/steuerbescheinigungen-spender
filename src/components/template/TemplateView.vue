@@ -1,18 +1,41 @@
 <template>
   <v-card>
     <v-toolbar dark fixed color="accent">
-      <v-toolbar-title>Edit Template</v-toolbar-title>
+      <v-toolbar-title>{{$t('editTemplate')}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn dark flat @click="resetLocalTemplate()">
-          <v-icon>refresh</v-icon>&nbsp;{{ $t('resetToDefault') }}
-        </v-btn>
         <v-btn dark flat @click="close()">
           <v-icon>close</v-icon>&nbsp;{{ $t('cancel') }}
         </v-btn>
         <v-btn dark flat @click="save">
           <v-icon>save</v-icon>&nbsp;{{ $t('save') }}
         </v-btn>
+        <v-menu bottom left style="z-index:999;">
+          <v-btn slot="activator" icon dark>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-subheader>{{$t('editTemplate')}}</v-subheader>
+            <v-list-tile  @click="importSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary >import_export</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('import')}}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile  @click="exportSettings()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>get_app</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('export')}}</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile  @click="resetLocalTemplate()">
+              <v-list-tile-avatar>
+                <v-icon primary fab>refresh</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>{{$t('resetToDefault')}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>        
       </v-toolbar-items>            
     </v-toolbar>
     <v-layout fluid wrap style="background-color: #EFEFEF; margin-top: 65px;">
@@ -50,6 +73,20 @@
             </v-card-text>
           </v-card>
           <v-divider></v-divider>
+
+         <h2 class="my-4">Return Address</h2>
+          <v-card>
+            <v-card-text>
+              <v-text-field
+                label="ReturnAddress"
+                v-model="template.returnAddress"
+                @focus="highlightElement('template-returnaddress')"
+                template-returnaddress         
+              ></v-text-field>
+            </v-card-text>
+          </v-card>
+          <v-divider></v-divider>
+
           <h2 class="my-4">Letter</h2>
           <v-card>
             <v-card-text>
@@ -159,6 +196,7 @@
                 </div>
                 <div class="mt-4">
                   <br>
+                  <p v-show="template.returnAddress != ''" class="returnAddress" template-returnaddress>{{template.returnAddress}}</p>
                   <br>
                   Herr<br>
                   Max Musterman<br>
@@ -191,9 +229,18 @@
                     <v-flex xs-6>
                       <span id="template.letter.signature.city" template-letter-signature-city>{{template.letter.signature.city}}</span> den <span template-letter-signature-date>{{getFullDate(template.letter.signature.date)}}</span>
                     </v-flex>
-                    <v-flex xs-6 class="text-xs-center">
+                    <v-flex xs-6 class="text-xs-center signature-block" v-if="template.letter.signature.cashier != ''">
+                      <hr>
+                      <span id="template.letter.signature.cashier" template-letter-signature-cashier>{{template.letter.signature.cashier}}</span><br>
+                      <span template-name>{{template.name}}</span>
+                    </v-flex>
+                    <v-flex xs-6 class="text-xs-center signature-block" v-if="template.letter.signature.pastor != ''">
                       <hr>
                       <span id="template.letter.signature.pastor" template-letter-signature-pastor>{{template.letter.signature.pastor}}</span><br v-if="template.letter.signature.pastor != ''">
+                      <span template-name>{{template.name}}</span>
+                    </v-flex>
+                    <v-flex xs-6 class="text-xs-center signature-block" v-if="template.letter.signature.pastor == '' && template.letter.signature.cashier == ''">
+                      <hr>
                       <span template-name>{{template.name}}</span>
                     </v-flex>
                   </v-layout>
@@ -208,6 +255,7 @@
             <v-card class="report--page pa-4">
               <v-card-text class="">
                 <h3 id="template.report.title" template-report-title>{{template.report.title}}</h3>
+                <h3 id="template.report.subtitle" template-report-subtitle>{{template.report.subtitle}}</h3>
                 <v-layout class="my-4">
                   <v-flex xs2><span  id="template.report.formOfAddress" template-report-formOfAddress>{{template.report.formOfAddress}}</span></v-flex>
                   <v-flex xs6>
@@ -337,7 +385,13 @@ export default {
     },
     resetLocalTemplate: function () {
       localFileManager.resetItem(localStore, keys.TEMPLATE, this.$store, 'UPDATE_TEMPLATE')
-    }
+    },
+    importSettings: function () {
+      localFileManager.importJSONFile(localStore, keys.TEMPLATE, this.$store, 'UPDATE_TEMPLATE')
+    },
+    exportSettings: function () {
+      localFileManager.exportJSONFile(localStore, keys.TEMPLATE);
+    },
   },
   beforeMount(){
     //this.loadData()
@@ -375,7 +429,12 @@ export default {
     margin-bottom: 5px;
     padding: 0px;
   }
-
+  .returnAddress {
+    font-size: 10px;
+  }
+  .signature-block{
+    padding: 20px 0 0 5px;
+  }
   .templateTable {
     border-collapse: collapse;
     font-size: 12px;

@@ -1,10 +1,13 @@
 const q = require('q');
 const xlsx = require("xlsx");
 import errors from '../config/errors'
+const isError = function(e){
+  return e && e.stack && e.message;
+ }
 
-function parseDate(input) {
+function parseDate(input, locale="de-DE") {
   var parts = input.match(/(\d+)/g);
-  return new Date(parts[2], parts[1]-1, parts[0]).toLocaleDateString('de-DE', {month: '2-digit', day: '2-digit', year: 'numeric', hour12: false});
+  return new Date(parts[2], parts[1]-1, parts[0]).toLocaleDateString(locale, {month: '2-digit', day: '2-digit', year: 'numeric', hour12: false});
 }
 
 function returnDoubleDigitCents(val, separator) {
@@ -38,8 +41,8 @@ let getDonorsFromAddisonExport = function(filepath) {
         var jsonObject = xlsx.utils.sheet_to_json(workbook.Sheets[worksheet])
 
         jsonObject.sort(function (a, b) {
-          var x = a["Buchungsdatum"].toLowerCase();
-          var y = b["Buchungsdatum"].toLowerCase();
+          var x = parseDate(a["Buchungsdatum"].toLowerCase(), "ko-KR"); //Korean uses year-month-day order
+          var y = parseDate(b["Buchungsdatum"].toLowerCase(), "ko-KR"); //Korean uses year-month-day order
           if (x < y) {return -1;}
           if (x > y) {return 1;}
           return 0;
@@ -80,7 +83,7 @@ let getDonorsFromAddisonExport = function(filepath) {
             "Betrag": parsePotentiallyGroupedFloat(rec["Betrag"]),
             "Datum": (rec["Datum"] == undefined) ? parseDate(rec["Belegdatum"]) : parseDate(rec["Datum"]),
             "Konto": (rec["Konto"] == undefined) ? rec["Gegenkonto"] : rec["Konto"],
-            "Gegenkonto": (rec["Konto"] == undefined) ? rec["Kontonummer"] : rec["Gegenkonto"],
+            "Gegenkonto": (rec["Gegenkonto"] == undefined) ? rec["Kontonummer"] : rec["Gegenkonto"],
             "Kostenstelle 1": (rec["Kostenstelle 1"] == undefined) ? rec["Kost 1"] : rec["Kostenstelle 1"] 
           }
           return _rec
@@ -93,7 +96,14 @@ let getDonorsFromAddisonExport = function(filepath) {
           deferred.reject({message: errors.E003})
         }
       } catch (e){
-        deferred.reject({message: e})
+        let _error
+        if (!isError(e)) {          
+          _error = String(e)
+        }
+        else {
+          _error = e.message
+        }
+        deferred.reject({message: _error})
       }
     }
     else {
