@@ -203,13 +203,14 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     });
 
     reportData.sort(function (a, b) {
-      var x =  a.name.toLowerCase();
-      var y =  b.name.toLowerCase();
-      if (x < y) {return -1;}
-      if (x > y) {return 1;}
-      return 0;
-    });
-
+      //Sort by Last Name, then First Name
+      if ( a.name.localeCompare(b.name) == 0) {
+        return a.vorname.localeCompare(b.vorname)
+      }
+      else {
+        return a.name.localeCompare(b.name) 
+      }
+    })
     return reportData;
   };
 
