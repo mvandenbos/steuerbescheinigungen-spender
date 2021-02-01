@@ -16,8 +16,10 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
     }, []);
   //#endregion
 
+  const _activePersons = ctPersons.filter(person => person.archiv_yn == "0" );
+
   const _addisonData = Object.values(addison);
-  const _ctPersons = Object.values(ctPersons);
+  const _ctPersons = Object.values(_activePersons);
   
   const addisonFinder = arrayFind(_addisonData);
   const ctPersonFinder = arrayFind(_ctPersons);
