@@ -39,18 +39,10 @@ let getDonorsFromAddisonExport = function(filepath) {
         var workbook = xlsx.readFile(filepath, {type: "string", raw: true})
         var worksheet = workbook.SheetNames[0]
         var jsonObject = xlsx.utils.sheet_to_json(workbook.Sheets[worksheet])
-
-        jsonObject.sort(function (a, b) {
-          var x = parseDate(a["Buchungsdatum"].toLowerCase(), "ko-KR"); //Korean uses year-month-day order
-          var y = parseDate(b["Buchungsdatum"].toLowerCase(), "ko-KR"); //Korean uses year-month-day order
-          if (x < y) {return -1;}
-          if (x > y) {return 1;}
-          return 0;
-        });
         
         addisonData = jsonObject.filter(record=> {
             if ( 
-                ( record["Gegenkonto"] == '8110' || 
+                (( record["Gegenkonto"] == '8110' || 
                   record["Gegenkonto"] == '8111' || 
                   record["Gegenkonto"] == '8112' ||
                   record["Gegenkonto"] == '8113' ||
@@ -71,8 +63,11 @@ let getDonorsFromAddisonExport = function(filepath) {
                   record["Kontonummer"] == '8117' ||
                   record["Kontonummer"] == '8118' ||
                   record["Kontonummer"] == '8119'
-                ) &&
-                record["Belegnummer 2"] != undefined ) {
+                )) &&
+                (record["Belegnummer 2"] != undefined) && 
+                (record["Betrag"].trim().startsWith("-") == true ) 
+                )             
+                {
                 return true
             }
             else {return false}
@@ -88,6 +83,15 @@ let getDonorsFromAddisonExport = function(filepath) {
           }
           return _rec
         });
+
+        addisonData.sort(function (a, b) {
+          var x = parseDate(a["Datum"].toLowerCase(), "ko-KR"); //Korean uses year-month-day order
+          var y = parseDate(b["Datum"].toLowerCase(), "ko-KR"); //Korean uses year-month-day order
+          if (x < y) {return -1;}
+          if (x > y) {return 1;}
+          return 0;
+        });
+
 
         if (addisonData.length > 0) {
           deferred.resolve(addisonData);
