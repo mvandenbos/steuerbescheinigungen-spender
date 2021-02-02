@@ -221,16 +221,18 @@ function addAnlageTable(doc, report) {
     ]
   };
 
-  for (let i = 0; i <= 39; i++) {
+  for (let i = 0; i <= 59; i++) {
     if (report["datum_" + i.toString().padStart(2, 0)] != null) {
       table.rows.push([report["datum_" + i.toString().padStart(2, 0)], report["artderzuwendung_" + i.toString().padStart(2, 0)], report["verzichtauferstattung_" + i.toString().padStart(2, 0)], report["spende_" + i.toString().padStart(2, 0)] ]);
     }
   } 
   table.rows.push(['Gesamtsumme', '', '', report.total ])
 
+  let rowFontSize = (table.rows.length > 36) ? 6 : 8
+
   doc.table(table, {
       prepareHeader: () => doc.font('FontBold').fontSize(8).lineGap(1),
-      prepareRow: (row, i) => doc.font('FontNormal').fontSize(8).lineGap(0)
+      prepareRow: (row, i) => doc.font('FontNormal').fontSize(rowFontSize).lineGap(0)
   });
 }
 function addFooter(doc, templateData) {
