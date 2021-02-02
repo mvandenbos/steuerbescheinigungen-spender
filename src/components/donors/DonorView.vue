@@ -75,7 +75,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(value, i) in 39" v-bind:key="i">
+                  <tr v-for="(value, i) in 59" v-bind:key="i">
                     <td v-if="props.item['datum_' + i.toString().padStart(2,0)]">{{ props.item["datum_" + i.toString().padStart(2,0)]}}</td>
                     <td v-if="props.item['spende_' + i.toString().padStart(2,0)]">{{ props.item["spende_" + i.toString().padStart(2,0)]}}</td>
                     <td v-if="props.item['artderzuwendung_' + i.toString().padStart(2,0)]">
