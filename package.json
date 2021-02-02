@@ -1,7 +1,7 @@
 {
   "name": "steuerbescheinigungen-spender",
   "productName": "Steuerbescheinigungen Spender",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "die Steuerbescheinigungen Spender App fuer Churchtools und Addison/Excel Imports",
   "main": "src/index",
   "scripts": {
