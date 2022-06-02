@@ -58,6 +58,8 @@
     }
   },
   "dependencies": {
+    "@churchtools/churchtools-client": "^1.0.2",
+    "axios-cookiejar-support": "^1.0.1",
     "electron-compile": "^6.4.3",
     "electron-devtools-installer": "^2.1.0",
     "electron-simple-updater": "^1.4.2",
@@ -69,6 +71,7 @@
     "q": "^1.5.1",
     "restler": "^3.4.0",
     "string-similarity": "^3.0.0",
+    "tough-cookie": "^4.0.0",
     "underscore": "^1.9.1",
     "vue": "^2.5.10",
     "vue-form-generator": "^2.3.0",

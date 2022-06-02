@@ -52,6 +52,22 @@
               ></v-text-field>
             </v-card-text>
           </v-card>
+
+          <h2 class="my-4">Digital Signature</h2>
+          <v-card>
+            <v-card-text>
+            <div v-if="getSignatureSrc() != ''">
+              <img :src="getSignatureSrc()" :alt="getSignatureAlt()" class="logo mb-2"/>
+              <v-btn v-show="getSignatureSrc() != ''" flat small color="error" @click="removeSignature">{{ $t('logoRemove') }}</v-btn>
+            </div>
+            <div v-else>
+              <uploader-view filetypes="image/png, image/jpeg, image/gif" @file-change="processFileChange" class="my-2">
+              </uploader-view>
+            </div>
+            </v-card-text>
+          </v-card>
+          <v-divider></v-divider>
+
           <h2 class="my-4">Letter Head</h2>
           <v-card>
             <v-card-text>
@@ -225,21 +241,24 @@
                   <p v-for="(p, key) in template.letter.body" v-bind:key="key" v-if="p!=''"  :id="'template.letter.body.'+ key" v-bind="attributes(`template-letter-body-${key}`)">{{p}}</p>
                 </div>
                 <div class="mt-4">
-                  <v-layout>
+                  <v-layout style="align-items: center; height: 0;">
                     <v-flex xs-6>
                       <span id="template.letter.signature.city" template-letter-signature-city>{{template.letter.signature.city}}</span> den <span template-letter-signature-date>{{getFullDate(template.letter.signature.date)}}</span>
                     </v-flex>
                     <v-flex xs-6 class="text-xs-center signature-block" v-if="template.letter.signature.cashier != ''">
+                      <img :src="getSignatureSrc()" :alt="getSignatureAlt()" class="logo mb-2"/>
                       <hr>
                       <span id="template.letter.signature.cashier" template-letter-signature-cashier>{{template.letter.signature.cashier}}</span><br>
                       <span template-name>{{template.name}}</span>
                     </v-flex>
                     <v-flex xs-6 class="text-xs-center signature-block" v-if="template.letter.signature.pastor != ''">
+                      <img :src="getSignatureSrc()" :alt="getSignatureAlt()" class="logo mb-2"/>
                       <hr>
                       <span id="template.letter.signature.pastor" template-letter-signature-pastor>{{template.letter.signature.pastor}}</span><br v-if="template.letter.signature.pastor != ''">
                       <span template-name>{{template.name}}</span>
                     </v-flex>
-                    <v-flex xs-6 class="text-xs-center signature-block" v-if="template.letter.signature.pastor == '' && template.letter.signature.cashier == ''">
+                    <v-flex xs-6 class="text-xs-center" v-if="template.letter.signature.pastor == '' && template.letter.signature.cashier == ''">
+                      <img height="50px" width="175px" :src="getSignatureSrc()" :alt="getSignatureAlt()" class="logo"/>
                       <hr>
                       <span template-name>{{template.name}}</span>
                     </v-flex>
@@ -330,6 +349,7 @@ const fs = require('fs');
 const filePath = path.join(__dirname, "..", "../template/template.json");
 import keys from '../../config/LocalForageKeys'
 import localFileManager from '../../utilities/localFileManager'
+import UploaderView from '../utilities/UploaderView'
 
 export default {
   name: "TemplateView",
@@ -337,6 +357,7 @@ export default {
     return {
     }
   },
+  components: { UploaderView },
   computed: mapState([
     'template'
   ]),
@@ -392,6 +413,35 @@ export default {
     exportSettings: function () {
       localFileManager.exportJSONFile(localStore, keys.TEMPLATE);
     },
+    processFileChange(e) {
+      if (e.target.files.length > 0) {
+        this.file = e.target.files[0]        
+        let rawdata = fs.readFileSync(this.file.path)
+        let base64data = rawdata.toString('base64');
+        let base64Path = "data:" + this.file.type + ";base64," + base64data 
+        this.template.signatureImage.src = base64Path
+      }
+    },
+    removeSignature() {
+      this.template.signatureImage.src = ""
+      this.template.signatureImage.description = ""
+    },
+    getSignatureSrc: function () {
+      if (this.template && this.template.signatureImage) {
+        return this.template.signatureImage.src
+      }
+    },
+    getSignatureAlt: function () {
+      if (this.template  && this.template.signatureImage) {
+        return this.template.signatureImage.description
+      }
+    },
+    updateSignatureAlt: function (e) {
+      if (this.template  && this.template.signatureImage) {
+        console.dir(e)
+        console.log(this.template.signatureImage.description)
+      }
+    },
   },
   beforeMount(){
     //this.loadData()
@@ -432,9 +482,9 @@ export default {
   .returnAddress {
     font-size: 10px;
   }
-  .signature-block{
+  /* .signature-block{
     padding: 20px 0 0 5px;
-  }
+  } */
   .templateTable {
     border-collapse: collapse;
     font-size: 12px;

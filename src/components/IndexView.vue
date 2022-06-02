@@ -328,8 +328,9 @@ export default {
       self.showExistingErrors = false;
       ct.churchtools.user = self.user;
       ct.churchtools.password = self.password;
-      loginQ().then(result => {
+      loginQ(self.user, self.password).then(result => {
         if (result.status == "success") {
+          console.log(result);
           self.loggedIn = true;
           self.password = null;
           self.activeStep = 2;
@@ -342,7 +343,7 @@ export default {
           self.setAlert(true, result.message);
         }
       })
-      .fail(err => {
+      .catch(err => {
         let msg = (err.message == undefined) ? this.$parent.$i18n.translate('unknownURL') : err.message
         self.setAlert(true, msg);
         self.loading = false;
@@ -356,7 +357,7 @@ export default {
           self.activeStep = 3;
           self.loading = false;
         })
-        .fail(err => {
+        .catch(err => {
           self.setAlert(true, err.message);
           self.loading = false;
         });
@@ -382,7 +383,7 @@ export default {
           self.$store.dispatch('UPDATE_PERSONS', Object.values(result.data))
           this.refreshChurchToolsAddisonData();
         })
-        .fail(err => {
+        .catch(err => {
           self.setAlert(true, err.message);
           self.loading = false;
           self.refreshPersons = false;
