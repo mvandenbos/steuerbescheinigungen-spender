@@ -1,8 +1,8 @@
 {
   "win32-x64-prod": {
-    "readme": "Release v1.0.1",
+    "readme": "Release v1.0.2",
     "update": "https://github.com/mvandenbos/steuerbescheinigungen-spender/releases/download/v1.0.1/",
     "install": "https://github.com/mvandenbos/steuerbescheinigungen-spender/releases/download/v1.0.1/Steuerbescheinigungen.Spender-0.0.13.Setup.exe",
-    "version": "1.0.1"
+    "version": "1.0.2"
   }
 }
