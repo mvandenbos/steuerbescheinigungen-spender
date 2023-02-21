@@ -57,7 +57,7 @@
           <v-card>
             <v-card-text>
             <div v-if="getSignatureSrc() != ''">
-              <img :src="getSignatureSrc()" :alt="getSignatureAlt()" class="logo mb-2"/>
+              <img :src="getSignatureSrc()" :alt="getSignatureAlt()" class="logo mb-2 w-full" style="width: 100%;" />
               <v-btn v-show="getSignatureSrc() != ''" flat small color="error" @click="removeSignature">{{ $t('logoRemove') }}</v-btn>
             </div>
             <div v-else>
