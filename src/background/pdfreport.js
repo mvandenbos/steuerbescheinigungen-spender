@@ -137,6 +137,11 @@ function addSignatureBlock(doc, templateData) {
   doc.fontSize(fontSizeDefault)
   doc.text(templateData.letter.signature.city,doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
   doc.text(fullDate, doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
+  
+  //Add Signature
+  doc.moveUp(5)
+  .image(templateData.signatureImage.src, doc.x + signatureLineStart + 90, doc.y, { width: 175, height: 50})
+  .moveDown(2)
   //Draw Lines
   //two signatures
   if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
