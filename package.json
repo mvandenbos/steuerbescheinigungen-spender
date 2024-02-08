@@ -59,7 +59,8 @@
   },
   "dependencies": {
     "@churchtools/churchtools-client": "^1.0.2",
-    "axios-cookiejar-support": "^1.0.1",
+    "axios": "^1.5.0",
+    "axios-cookiejar-support": "^4.0.7",
     "electron-compile": "^6.4.3",
     "electron-devtools-installer": "^2.1.0",
     "electron-simple-updater": "^1.4.2",

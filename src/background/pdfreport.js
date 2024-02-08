@@ -10,6 +10,7 @@ const fontSizeHeader = 14
 const fontSizeSubHeader = 12
 const fontSizeDefault = 10
 const fontSizeSmall = 8
+const fontSizeExtraSmall = 6
 const pageMargin = 40
 const pageWidth = 595.28 - (pageMargin * 2)
 const filePath = path.join(__dirname, "..", "/template/template.json");
@@ -139,9 +140,9 @@ function addSignatureBlock(doc, templateData) {
   doc.text(fullDate, doc.x, doc.y, { 'width': dateTextWidth, 'align': 'center'})
   
   //Add Signature
-  doc.moveUp(5)
-  .image(templateData.signatureImage.src, doc.x + signatureLineStart + 90, doc.y, { width: 175, height: 50})
-  .moveDown(2)
+  doc.moveUp(5.5)
+  .image(templateData.signatureImage.src, doc.x + signatureLineStart + 85, doc.y, { width: 170, height: 60})
+  .moveDown(1)
   //Draw Lines
   //two signatures
   if (templateData.letter.signature.pastor != "" && templateData.letter.signature.cashier != "") {
@@ -183,6 +184,12 @@ function addSignatureBlock(doc, templateData) {
     //Just use name of organization using the template
     else {
       doc.text(templateData.name, doc.x + dateTextWidth, doc.y, { 'width': signatureWidth, 'align': 'center'});
+      if(templateData.letter.signature.machineNotice != "") {
+        
+        doc.fontSize(fontSizeExtraSmall)
+        doc.text(templateData.letter.signature.machineNotice, doc.x + ((signatureWidth / 3)/2), doc.y, { 'width': signatureWidth - (signatureWidth / 3), 'align': 'center'});
+        doc.fontSize(fontSizeDefault)
+      }
     }
   }
 }
@@ -208,7 +215,7 @@ function addAnlageHeader(doc, person, templateData) {
   
   doc.x = startX;
 }
-function addAnlageTable(doc, report) {
+function addAnlageTable(doc, report, templateData) {
   const table = {
     headers: [
       'Datum der Zuwendung', 
@@ -226,7 +233,7 @@ function addAnlageTable(doc, report) {
     ]
   };
 
-  for (let i = 0; i <= 59; i++) {
+  for (let i = 0; i <= 100; i++) {
     if (report["datum_" + i.toString().padStart(2, 0)] != null) {
       table.rows.push([report["datum_" + i.toString().padStart(2, 0)], report["artderzuwendung_" + i.toString().padStart(2, 0)], report["verzichtauferstattung_" + i.toString().padStart(2, 0)], report["spende_" + i.toString().padStart(2, 0)] ]);
     }
@@ -239,12 +246,36 @@ function addAnlageTable(doc, report) {
       prepareHeader: () => doc.font('FontBold').fontSize(8).lineGap(1),
       prepareRow: (row, i) => doc.font('FontNormal').fontSize(rowFontSize).lineGap(0)
   });
+
+  // if (report["datum_42".padStart(2, 0)] != null) {
+  //   table.rows = [];
+  //   doc.addPage() 
+  //   addAnlageHeader(doc, report, templateData)
+  //   doc.moveDown(4)
+
+  //   for (let i = 43; i <= 82; i++) {
+  //     if (report["datum_" + i.toString().padStart(2, 0)] != null) {
+  //       table.rows.push([report["datum_" + i.toString().padStart(2, 0)], report["artderzuwendung_" + i.toString().padStart(2, 0)], report["verzichtauferstattung_" + i.toString().padStart(2, 0)], report["spende_" + i.toString().padStart(2, 0)] ]);
+  //     }
+  //   } 
+  //   table.rows.push(['Gesamtsumme', '', '', report.total ])
+  
+  //   doc.table(table, {
+  //       prepareHeader: () => doc.font('FontBold').fontSize(8).lineGap(1),
+  //       prepareRow: (row, i) => doc.font('FontNormal').fontSize(rowFontSize).lineGap(0)
+  //   });
+  // }
+
+
+
+
 }
 function addFooter(doc, templateData) {
-  doc.rect(pageMargin, 691.89, pageWidth, 100)
+  let footerY = doc.page.height - pageMargin - 100;
+  doc.rect(pageMargin, footerY, pageWidth, 100)
   .stroke();  
   doc.x = pageMargin + 10;
-  doc.y = 701.89;
+  doc.y = footerY + 10;
   doc.fontSize(fontSizeSmall)
   .font('FontBold')
   .text(templateData.footer.title, { 'width': pageWidth - 20, 'align': 'left'})
@@ -285,12 +316,13 @@ function getPDFDocument(reports, templateData) {
     addBodyText(doc, templateData);
     doc.moveDown(2);
     addSignatureBlock(doc, templateData);
+    doc.moveDown(.5);
     addFooter(doc, templateData);
     doc.addPage()
     addAnlageHeader(doc, report, templateData)
     doc.moveDown(4)
     addAnlageTable(doc, report, templateData);    
-    addFooter(doc, templateData);
+    //addFooter(doc, templateData);
 
     if(index < (numberOfReports - 1)){
       doc.addPage()
