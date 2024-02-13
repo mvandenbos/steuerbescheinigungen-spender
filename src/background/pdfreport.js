@@ -333,6 +333,62 @@ function getPDFDocument(reports, templateData) {
   return doc
 }
 
+async function generateIndividualPDFReports(reports) {
+  
+  var deferred = q.defer();
+  let templateData = getTemplateData();
+
+  dialog.showOpenDialog({
+      properties: ['openDirectory']
+  }, function(file_path) {
+    let selectedDir = file_path
+
+    var dir = selectedDir +  "\\Spendenbescheinigung-einzeln-" + templateData.year
+
+    if (!fs.existsSync(dir)){
+      fs.mkdirSync(dir);
+    }
+  
+    function generateIndividualPDF(index, cb) {
+  
+      let _report = []
+      _report.push(reports[index])
+      
+      if (reports.length <= index) {
+          return cb(null)
+      }
+  
+      let filePath = "Spendenbescheinigung-" + templateData.year + "-" + reports[index].name + ", " + reports[index].vorname + "-(" + reports[index].optigem_nr  + ").pdf"    
+      let dest = path.join(dir, filePath)
+      let pdf = getPDFDocument(_report, templateData)
+      let copy = fs.createWriteStream(dest)  
+      pdf.pipe(copy);
+  
+      copy.on('error', err => {
+        return cb(err)
+      })
+    
+      copy.on('finish', () => {
+        generateIndividualPDF(index + 1, cb)
+      })  
+    }
+  
+    generateIndividualPDF(0, (err) => {
+      if (err) {
+        // Handle Error
+          console.log(err)
+      } else {
+        console.log('Files Copied Successfully!')
+        deferred.resolve(dir);
+      }
+    })
+    
+  })
+
+  return deferred.promise;
+}
+
+
 async function generatePDFReport (reports) {
   var deferred = q.defer();
   let templateData = getTemplateData();
@@ -368,5 +424,6 @@ async function generatePDFReport (reports) {
 };
 
 module.exports = {
-  generatePDFReport: generatePDFReport
+  generatePDFReport: generatePDFReport,
+  generateIndividualPDFReports: generateIndividualPDFReports
 }
