@@ -341,47 +341,52 @@ async function generateIndividualPDFReports(reports) {
   dialog.showOpenDialog({
       properties: ['openDirectory']
   }, function(file_path) {
-    let selectedDir = file_path
+    if (file_path) {
+      let selectedDir = file_path
 
-    var dir = selectedDir +  "\\Spendenbescheinigung-einzeln-" + templateData.year
+      var dir = selectedDir +  "\\Spendenbescheinigung-einzeln-" + templateData.year
 
-    if (!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
-    }
-  
-    function generateIndividualPDF(index, cb) {
-  
-      let _report = []
-      _report.push(reports[index])
-      
-      if (reports.length <= index) {
-          return cb(null)
+      if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
       }
-  
-      let filePath = "Spendenbescheinigung-" + templateData.year + "-" + reports[index].name + ", " + reports[index].vorname + "-(" + reports[index].optigem_nr  + ").pdf"    
-      let dest = path.join(dir, filePath)
-      let pdf = getPDFDocument(_report, templateData)
-      let copy = fs.createWriteStream(dest)  
-      pdf.pipe(copy);
-  
-      copy.on('error', err => {
-        return cb(err)
-      })
     
-      copy.on('finish', () => {
-        generateIndividualPDF(index + 1, cb)
-      })  
-    }
-  
-    generateIndividualPDF(0, (err) => {
-      if (err) {
-        // Handle Error
-          console.log(err)
-      } else {
-        console.log('Files Copied Successfully!')
-        deferred.resolve(dir);
+      function generateIndividualPDF(index, cb) {
+    
+        let _report = []
+        _report.push(reports[index])
+        
+        if (reports.length <= index) {
+            return cb(null)
+        }
+    
+        let filePath = "Spendenbescheinigung-" + templateData.year + "-" + reports[index].name + ", " + reports[index].vorname + "-(" + reports[index].optigem_nr  + ").pdf"    
+        let dest = path.join(dir, filePath)
+        let pdf = getPDFDocument(_report, templateData)
+        let copy = fs.createWriteStream(dest)  
+        pdf.pipe(copy);
+    
+        copy.on('error', err => {
+          return cb(err)
+        })
+      
+        copy.on('finish', () => {
+          generateIndividualPDF(index + 1, cb)
+        })  
       }
-    })
+    
+      generateIndividualPDF(0, (err) => {
+        if (err) {
+          // Handle Error
+            console.log(err)
+        } else {
+          console.log('Files Copied Successfully!')
+          deferred.resolve(dir);
+        }
+      })
+    }
+    else {
+      deferred.reject({message: errors.E002});
+    }
     
   })
 
