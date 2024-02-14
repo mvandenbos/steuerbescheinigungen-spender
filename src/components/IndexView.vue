@@ -335,11 +335,26 @@ export default {
       self.showExistingErrors = false;
       ct.churchtools.user = self.user;
       ct.churchtools.password = self.password;
-      loginQ();      
-      self.activeStep = 2;
-      self.setAlert(false);
-      self.getExportSpenderPersonData();
-      
+      loginQ(self.user, self.password).then(result => {
+        if (result.status == "success") {
+          console.log(result);
+          self.loggedIn = true;
+          self.password = null;
+          self.activeStep = 2;
+          self.setAlert(false);
+          self.getExportSpenderPersonData();
+        } else {
+          self.loggedIn = false;
+          self.password = null;
+          self.loading = false;
+          self.setAlert(true, result.message);
+        }
+      })
+      .catch(err => {
+        let msg = (err.message == undefined) ? this.$parent.$i18n.translate('unknownURL') : err.message
+        self.setAlert(true, msg);
+        self.loading = false;
+      });      
     },
     getExportSpenderPersonData: function() {
       var self = this;
