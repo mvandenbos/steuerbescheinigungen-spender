@@ -28,7 +28,7 @@ function generateExcelReport (reports) {
     'total',
     'totalText'
   ]
-  for(var i = 0; i < 40; i++) {
+  for(var i = 0; i < 100; i++) {
     headerOrder.push('datum_'+i.toString().padStart(2,0))
     headerOrder.push('spende_'+i.toString().padStart(2,0))
     headerOrder.push('artderzuwendung_'+i.toString().padStart(2,0))

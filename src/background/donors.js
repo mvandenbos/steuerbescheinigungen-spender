@@ -187,7 +187,7 @@ let getChurchtoolsAndAddisonData = function(addison, ctPersons) {
         total: currencyFormater.formatEuro(totalDonations.toFixed(2)),
         totalText: totalDonationsText,
       }
-      for(var i = 0; i < 40; i++) {
+      for(var i = 0; i < 100; i++) {
         if (donations[i] != null) {
             exportData['datum_'+i.toString().padStart(2,0)] = (donations[i].Datum == undefined) ? donations[i].Belegdatum : donations[i].Datum
             exportData['spende_'+i.toString().padStart(2,0)] = currencyFormater.formatEuro(Math.abs(parseFloat(donations[i].Betrag)))

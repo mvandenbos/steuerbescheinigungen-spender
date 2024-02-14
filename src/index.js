@@ -140,9 +140,20 @@ ipcMain.on('generate-report-complete', (event, file_path) => {
   shell.openItem(file_path);
 })
 
+ipcMain.on('generate-individual-reports-complete', (event, file_path) => {
+  console.log('generate-individual-reports-complete')
+  mainWindow.webContents.send('generated-individual-reports-saved', file_path );
+  shell.openItem(file_path);
+})
+
 ipcMain.on('start-generate-report', (event, data) => {
   console.log("start-generate-report")
   reportWindow.webContents.send('generate-report', data );
+})
+
+ipcMain.on('start-generate-individual-reports', (event, data) => {
+  console.log("start-generate-individual-reports")
+  reportWindow.webContents.send('generate-individual-reports', data );
 })
 
 ipcMain.on('generate-excel-complete', (event, file_path) => {

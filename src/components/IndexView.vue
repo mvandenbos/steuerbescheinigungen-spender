@@ -134,9 +134,14 @@
                     <v-icon class="mr-2" medium>cloud_download</v-icon>PDF
                     <span slot="loader">Generating...</span>
                 </v-btn>
+                <v-btn flat large color="secondary white--text" title="Download Einzeln PDF" @click="generateIndividualPDFs" :loading="loadingIndividualPdfs" :disabled="loadingIndividualPdfs">
+                    <v-icon class="mr-2" medium>cloud_download</v-icon>Einzeln PDFs
+                    <span slot="loader">Generating...</span>
+                </v-btn>
               </v-card-actions>              
               <v-progress-linear :indeterminate="true" v-show="loadingPdf" color="primary"></v-progress-linear>
               <v-progress-linear :indeterminate="true" v-show="loadingExcel" color="green darken-4"></v-progress-linear>
+              <v-progress-linear :indeterminate="true" v-show="loadingIndividualPdfs" color="secondary"></v-progress-linear>
               <v-flex class="ma-4">
                 <v-alert :type="getCtPerson.alertType" outline v-model="getCtPerson.alertValue" transition="fade-transition" :dismissible="getCtPerson.isDismisable">{{getCtPerson.alertText}}</v-alert>
               </v-flex>
@@ -284,6 +289,7 @@ export default {
     widgets: false,
     activeStep: 1,
     loading: false,
+    loadingIndividualPdfs: false,
     loadingPdf: false,
     loadingExcel: false,
     refreshPersons: false,
@@ -319,6 +325,7 @@ export default {
         this.setAlert(true, err.message, "error", true )
         this.loading = false
         this.loadingPdf = false
+        this.loadingIndividualPdfs = false
         this.loadingExcel = false
       })
     },
@@ -328,26 +335,11 @@ export default {
       self.showExistingErrors = false;
       ct.churchtools.user = self.user;
       ct.churchtools.password = self.password;
-      loginQ(self.user, self.password).then(result => {
-        if (result.status == "success") {
-          console.log(result);
-          self.loggedIn = true;
-          self.password = null;
-          self.activeStep = 2;
-          self.setAlert(false);
-          self.getExportSpenderPersonData();
-        } else {
-          self.loggedIn = false;
-          self.password = null;
-          self.loading = false;
-          self.setAlert(true, result.message);
-        }
-      })
-      .catch(err => {
-        let msg = (err.message == undefined) ? this.$parent.$i18n.translate('unknownURL') : err.message
-        self.setAlert(true, msg);
-        self.loading = false;
-      });
+      loginQ();      
+      self.activeStep = 2;
+      self.setAlert(false);
+      self.getExportSpenderPersonData();
+      
     },
     getExportSpenderPersonData: function() {
       var self = this;
@@ -469,6 +461,15 @@ export default {
       ipcRenderer.send('start-generate-report', this.donationReportData)  
       ipcRenderer.on('generated-report-saved', (event, file_path) => {
         self.loadingPdf = false
+        self.setAlert(false);
+      })
+    },
+    generateIndividualPDFs: function() {
+      let self = this
+      this.loadingIndividualPdfs = true
+      ipcRenderer.send('start-generate-individual-reports', this.donationReportData)  
+      ipcRenderer.on('generated-individual-reports-saved', (event, file_path) => {
+        self.loadingIndividualPdfs = false
         self.setAlert(false);
       })
     },

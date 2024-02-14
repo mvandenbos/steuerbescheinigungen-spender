@@ -34,7 +34,8 @@
       "city": "Frankfurt am Main",
       "date": "",
       "pastor": "Pastor Mustermann",
-      "cashier": ""
+      "cashier": "",
+      "machineNotice": ""
     }
   },
   "report": {

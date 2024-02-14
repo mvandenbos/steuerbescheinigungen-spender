@@ -21,6 +21,15 @@ ipcRenderer.on("generate-report", (event, reports) => {
   })
 })
 
+
+ipcRenderer.on("generate-individual-reports", (event, reports) => {
+  pdfreport.generateIndividualPDFReports(reports).then((file_path) => {
+    ipcRenderer.send("generate-individual-reports-complete", file_path);
+  }, function(err) {
+    ipcRenderer.send("background-error", err)
+  })
+})
+
 ipcRenderer.on("parse-addison-data", (event, file_path) => {
   addisonparser.getDonorsFromAddisonExport(file_path).then((data)=> {
     ipcRenderer.send("parse-addison-data-complete", data);
